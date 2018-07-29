@@ -1,0 +1,529 @@
+<html>
+
+<head>
+
+  <link href="../assets/css/www.min.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="../assets/css/main.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/code-cadets-custom.css" rel="stylesheet" type="text/css" />
+
+
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-light-499d377ed666d625078a9842a96e636c4985e27ed4c550836ba564ab5f09d05e.css">
+  <script type="text/javascript" src="../assets/js/highlight/highlight.pack-af76728dfe3d98887947abb9090adcb18dd6d1ad0f092d60360179561eee1e19.js"></script>
+
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <title>Software Setup</title>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1>Code Cadets Extension 2018</h1>
+
+  </header>
+
+    <div id="body-wrap" role="main">
+      <div id="body">
+
+        <div id="content">
+  
+  <div class="marginleft ">
+  
+  
+    
+    
+      <div> 
+        <h1 class="post-title">Software setup</h1>
+    </div>
+  
+  </div>
+  
+  
+      <div class="doublewide nomargintop" style="float:none; display:block">
+        <p class="info-box"><strong>Update:</strong> if you’re having trouble in the CSIT computer labs, we’ve added a
+script to help you out. Open up a terminal and type <code>setup-platformio</code> then hit
+<code>return</code> and it’ll do all the things for you (if you haven’t set up anything yet
+on your lab account this still might take ~30mins or so, but shouldn’t take much
+longer than that). If everything <em>already</em> works on your lab machine running the
+<code>setup-platformio</code> script shouldn’t break anything, but you don’t have to do it
+either.</p>
+
+<p>The Integrated Development Environment (IDE) we use in COMP2300/6300 is <a href="https://code.visualstudio.com/">Visual
+Studio Code</a> (we’ll usually call it <strong>VSCode</strong>
+for short). VSCode is a generic text editor, which means that it’s really good
+at editing text, but doesn’t care too much what that text is/represents.
+However, VSCode also allows people to write “extensions” to help VSCode write &amp;
+run code for different programming languages.</p>
+
+<p>One such extension is called <a href="http://platformio.org/">PlatformIO</a>, which is an
+“an open source ecosystem<sup id="fnref:ecosystem"><a href="#fn:ecosystem" class="footnote">1</a></sup> for IoT (Internet of Things) development”.</p>
+
+<p>We’ll only be dealing with one specific “board” (your stm32 l476g discoboard) in
+this course, so we won’t use all of the PlatformIO functionality. Still, it
+provides the compiler, assembler and other important components for writing &amp;
+running code on your discoboard. You don’t have to master everything straight
+away, we’ll step you through it in the labs (so make sure you attend all the
+labs!).</p>
+
+<h2 id="installation">Installation</h2>
+
+<p class="info-box">If you’re on one of the CSIT Ubuntu lab machines, then most of this is already
+done, although if it’s the first time you’ve ever used VSCode in the CSIT labs
+then you’ll still have to install the VSCode extensions—jump to step 3.</p>
+
+<p>To set this all up on a new machine (e.g. your own laptop) here are the steps:</p>
+
+<ol>
+  <li>
+    <p>read the COMP2300/6300 <a href="../../policies/index.html#own-machine-policy">own machine policy</a></p>
+  </li>
+  <li>
+    <p><a href="https://code.visualstudio.com/">download &amp; install VSCode</a> (works on macOS,
+Linux &amp; Windows)</p>
+  </li>
+  <li>
+    <p>open VSCode, <a href="https://code.visualstudio.com/docs/editor/extension-gallery">open the <strong>Extensions</strong>
+view</a></p>
+  </li>
+  <li>
+    <p>search for and install the <strong>COMP2300</strong> extension (version <code>0.3.5</code>, id
+<code>anucecsit.comp2300-extension-pack</code>)</p>
+  </li>
+  <li>
+    <p>reload the VSCode window (using the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
+palette</a>)</p>
+  </li>
+</ol>
+
+<p>After you finish these steps, VSCode will say that it’s “Installing PlatformIO
+Core”. <strong>Wait until it finishes</strong> (this might take several minutes, depending on
+your connection &amp; computer) then wait for the prompt to reload the window again.
+Be patient—if you refresh the window before it finishes it cancels the install
+process and you have to start again!</p>
+
+<h2 id="using-vscode--platformio">Using VSCode &amp; PlatformIO</h2>
+
+<p>VSCode has <a href="https://code.visualstudio.com/docs">pretty good documentation</a>, and
+the lab material will link to specific parts of it where appropriate. However,
+understanding your tools is really important, so take the time to read through
+the documentation and get to know the features of VSCode. It’ll make your life
+easier in the end, even if there’s a learning curve at the start.</p>
+
+<p>Once you’ve got VSCode &amp; the necessary plugins installed (and you’ve got your
+discoboard) you’re able to write and run your first program. That’s what lab 1
+is all about—so head <a href="../../labs/01-intro/index.html#connecting-the-board">to that page</a> and give it a try.</p>
+
+<h3 id="environ-explanation">How the software environment works</h3>
+
+<p>Having an understanding of how the software environment work will help you make sense of
+some error messages, as well as how you might resolve them.</p>
+
+<p>The COMP2300 extension depends on Cortex Debug, PlatformIO IDE and a few other extensions.
+So when COMP2300 extension is installed, those extensions will be installed as well.
+This also means that if one of those extension fails to activate at start up/window reload,
+the COMP2300 extension will also fail to activate.
+All these extensions will be installed under the <code>~/.vscode/extensions</code> directory.</p>
+
+<p>PlatformIO IDE extension is a light weight interface between VSCode and the actual PlatofrmIO Core. PIO Core (<code>platformio</code> program) does all the heavy lifting of toolchain and library management, compiling and uploading code etc.
+When PIO IDE extension starts, it first verifies the integrity of PIO Core installation,
+and download it if necessary (under <code>~/.platformio</code> directory).</p>
+
+<p>In this course we are using the ST STM32 “platform” (<code>platform=ststm32@version</code> in <code>platformio.ini</code>).
+This platform is installed under (<code>~/.platformio/platforms</code>).
+PIO Core will download necessary toolchains associated with this platform
+(<code>~/.platformio/packages</code>).
+The most important three are ARM GCC (<code>toolchain-gccarmnoneeabi</code>), OpenOCD (<code>tool-openocd</code>),
+and ST-Link (<code>tool-stlink</code>).
+ARM GCC is used to compile, and debug code; OpenOCD and ST-Link are used to upload compiled binary to the disco board and providing an interface between the board and the debugger (GDB).</p>
+
+<p>There are some settings (in <code>.vscode/settings.json</code>; this includes paths, suppressing PIO IDE’s forceful replacement of <code>.vscode/launch.json</code>) and debug configurations (in <code>.vscode/launch.json</code>) needed to get Cortex Debug running properly.
+These should be handled automatically by the COMP2300 extension when it activates.
+Both COMP2300 extension and PIO IDE look for <code>platformio.ini</code> file in the workspace root directory to determine whether this workspace is a PlatformIO project.
+They only activates when a PlatformIO project is activated.</p>
+
+<p>When you execute <code>PlatformIO: Build</code> (e.g. <code>pio run</code>),
+it uses ARM GCC to compile the source files into an ELF image (<code>.pioenvs/disco_l476vg/firmware.elf</code>).
+And <code>PlatformIO: Upload</code> (e.g. <code>pio run --target update</code>) will upload this ELF image to the disco board using OpenOCD
+(used to be using <code>st-flash</code> with the old <code>3.8.0</code> version of STM32 platform,
+somehow in the <code>4.0.1</code> version it “forcefully” use OpenOCD). When launching the debugger,
+the Cortex Debug extension will launch <code>st-util</code> as an interface between the board and GDB
+(<code>disco board &lt;--&gt; st-util &lt;--&gt; arm-none-eabi-gdb &lt;--&gt; VSCode</code>).
+<code>st-util</code> opens a port (<code>50000</code> by default) through which GDB connects and talks to it;
+and VSCode interacts with GDB through
+<a href="https://sourceware.org/gdb/onlinedocs/gdb/GDB_002fMI.html">MI commands</a>.
+You can manually issue these commands through the DEBUG CONSOLE.</p>
+
+<p>You can view a bunch of different things through the <code>OUTPUT</code> panel by selecting the source
+(e.g. Tasks, Extensions, Log etc.).
+This is very helpful in troubleshooting.</p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<p>Here’s a list of issues you <em>might</em> come across, depending on the specific
+details of your machine. As always, be careful with copy-pasting random code you
+found on the internet (even in a university course!), and try to <em>understand</em>
+the problem first before you try the solutions listed.</p>
+
+<p>If there are new problems which come up often enough on <a href="https://piazza.com/anu.edu.au/spring2018/comp23006300/home">Piazza</a> I’ll add them
+here.</p>
+
+<p>Sometimes the board can get into a bad state causing the uploading to fail
+(especially when the debug LED becomes yellow).
+Stop any active debug session, and try unplug &amp; re-plug to reset the board.</p>
+
+<h3 id="vscode-developer-tools-console">VSCode developer tools console</h3>
+
+<p>Before you look at the specific problems, here’s a tip for getting the most
+useful error messages out of VSCode when things are going wrong. In command
+pallete, run the <strong>Developer: Toggle Developer Tools</strong> command and you’ll see a
+new pane pop up in VSCode. Switch to the <strong>Console</strong> tab (top-right of the
+screenshot) and you’ll see something like this:</p>
+
+<p><img src="vscode-developer-tools-268d98a7066e6572cf6857cdf66ac8d6d1c85f4a5607c76f9249db6912a75d5b.png" /></p>
+
+<p>Now, the messages in this Console view aren’t really meant for VSCode users, so
+there will be a lot of stuff here, and a lot of it probably isn’t relevant.
+However, if you keep this view open while you do the PlatformIO command which
+isn’t working for you, then it might output some error messages here (watch for
+<em>red</em> lines of text) which give you more detailed information about what’s going
+wrong.</p>
+
+<!-- ********************************************************************* -->
+<h3 id="breakpoint-problems">Breakpoint problems</h3>
+<h4 id="breakpoints-broken">can’t set a breakpoint by clicking in the left-hand “gutter”</h4>
+
+<p>If you suddenly lose the ability to set a breakpoint by clicking in the “gutter”
+to the left of the line numbers next to your code, then check that VSCode is
+still treating your file as an <strong>ARM</strong> file rather than just an <strong>Assembly</strong> file.</p>
+
+<p>To see if this is the case, check the bottom-right hand corner of the VSCode
+window (just to the right of the smiley face ☻). If it says “Assembly”, then
+click there and switch it to ARM (you should probably use the “Configure file
+association for .S” drop-down option to set this to ARM for <em>all</em> <code>.S</code> files
+while you’re there).</p>
+
+<h3 id="openocd-upload-problems">OpenOCD Upload Problems</h3>
+<h4 id="connection-problems">connection problems</h4>
+<pre><code class="language-text">Error: open failed OR Error: failed to read version
+</code></pre>
+<p>This means that OpenOCD fails to connect the board.
+First check whether you have connect your board to the computer.
+Then try unplug and re-plug the board.</p>
+
+<p>If you are on Windows, make sure you have <a href="#win-driver">installed the driver</a>.
+If you are on Linux, it <strong>could</strong> also be a <a href="#linux-device-permission">permission issue</a>.</p>
+
+<h4 id="flash-failure">flash failure</h4>
+
+<p>If you got your discoboard later in the course (e.g. after week 2) then you may
+have some initial problems uploading &amp; running your first program through the VSCode
+Build/Upload commands. The error message might look <em>something</em> like this,
+although there are variations.</p>
+<pre><code class="language-text">Error: init mode failed (unable to connect to target)
+</code></pre>
+<p>First, try unplug &amp; replug. If that doesn’t fix it, and if it is the “first
+upload” problem there’s a simple one-time fix (i.e. you only have to do this
+once—once you’ve successfully uploaded at least one program to your board this
+way then you can use the VSCode commands from then on).</p>
+
+<p>First, try the PlatformIO Build command (which will fail), then use the
+following commands in the VSCode integrated terminal:</p>
+<pre><code class="language-bash">~/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-objcopy -O binary .pioenvs/disco_l476vg/firmware.elf .pioenvs/disco_l476vg/firmware.bin
+~/.platformio/packages/tool-stlink/bin/st-flash write .pioenvs/disco_l476vg/firmware.bin 0x08000000
+</code></pre>
+
+<h4 id="libusb_open">libusb_open()</h4>
+<pre><code class="language-text">Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+</code></pre>
+<p>This doesn’t seem to be a problem <em>as long as</em> there are no other errors that causes the upload program to fail.
+The cause of this problem is still unknown,
+but the uploading still seems to succeed in the cases seen so far.</p>
+
+<!-- ********************************************************************* -->
+<h3 id="st-util--gdb-problems">ST-Util &amp; GDB Problems</h3>
+<h4 id="enoent">ENOENT</h4>
+<pre><code class="language-text">Failed to launch ST-Util GDB Server: Error: spawn C:\xxxxxx\xxxx\.platformio\packages\tool-stlink\st-util.exe ENOENT
+</code></pre>
+<p>ENOENT is file not found error.
+COMP2300 extension will first try to find <code>tool-stlink\bin\st-util.exe</code>,
+when failed, assumes <code>tool-stlink\st-util.exe</code> path.
+This checking is done when COMP2300 activates.
+This this especially the case when COMP2300 fails to activate properly,
+and the path was already set in <code>.vscode/settings.json</code> with the old (<code>3.8.0</code>) ST-STM32 platform.</p>
+
+<p>Make sure the COMP2300 extension is up-to-date (<code>0.2.x</code>+),
+and make sure ST-STM32 platform has been updated (<code>pio update</code>),
+and <code>~/.platformio/packages/tool-stlink/bin/st-util.exe</code> exists.
+And try reload the window.</p>
+
+<p>On Windows, we have discovered that if your user name is of another language,
+sometimes the path resolution will fail.
+In this case the easiest would be to create another user with an English user name,
+and do all the development there.</p>
+
+<h4 id="device-not-found">device not found</h4>
+<pre><code class="language-text">Couldn't find any ST-Link/V2 device
+</code></pre>
+<p>Check board connection; replug if necessary.</p>
+
+<p>If you are on Windows, check if you have <a href="#win-driver">installed the driver</a>.
+If you are on Linux, it <strong>could</strong> also be a <a href="#linux-device-permission">permission issue</a>.</p>
+
+<h4 id="failed-to-read-core-id">failed to read core id</h4>
+<pre><code class="language-text">src/common.c: Failed to read core id
+</code></pre>
+<p>Connection issue. Replug the board.</p>
+
+<h4 id="time-out">time out</h4>
+<pre><code class="language-text">Failed to launch ST-Util GDB Server: Timeout.
+</code></pre>
+<p>This is likely due to <code>st-util</code> failed to start properly.
+<a href="#more-info">Get more info from the Adapter Output</a>.</p>
+
+<h4 id="this-socket-is-closed">this socket is closed</h4>
+<pre><code class="language-text">Failed to launch GDB: Error: this socket is closed
+</code></pre>
+<p>This is probably because GDB failed to launch, check error output in DEBUG CONSOLE.</p>
+
+<p>One case we found is due to a path error made by an attempt to manually install packages.
+Check the paths in the <code>settings.json</code>, and also actual paths on your system.</p>
+
+<h4 id="remote-communication-error">remote communication error</h4>
+<pre><code class="language-text">Failed to launch GDB: Remote communication error. Target disconnected.: No error. (from target-select extended-remote localhost:50000）
+</code></pre>
+<p>This has been found on Windows, however the same thing MAY happen also on other OS as well.</p>
+
+<p>The real problem is that the default debug port 50000 is being used by some other software. So when the debugger tries to connect to it, the other software, rather than the expected server (st-util), responds, and refuses the connection request from GDB since it doesn’t know who GDB is.</p>
+
+<p>So the proper solution is to close the software that’s using port 50000, then everything should work just fine.</p>
+
+<p>To find out the clue on what it is, do the following:</p>
+<ul>
+  <li>Open Command Prompt in Administrator mode (search “command prompt” in start menu -&gt; right click and select “run with Administrator mode”)</li>
+  <li>Run the command <code>netstat -a -b</code>, and look for the application with Local Address <code>127.0.0.1:50000</code>.</li>
+  <li>Close the application that’s using the port (system monitor MAY be needed, Ctrl+Shift+Esc).</li>
+</ul>
+
+<p>If you can’t find the application, it may also mean that port <code>50000</code> wasn’t closed properly.
+Maybe try restart the computer in this case.</p>
+
+<h4 id="remote-connection-closed">remote connection closed</h4>
+<pre><code class="language-text">Failed to launch GDB: Remote connection closed (from target-select extended-remote localhost:50000)
+</code></pre>
+<p>This seems to be a problem with GDB failing to connect with <code>st-util</code>.
+<a href="#more-info">Get more info from the Adapter Output</a>.</p>
+
+<h4 id="connection-refused">connection refused</h4>
+<pre><code class="language-text">Failed to launch GDB: localhost:50000: No connection could be made because the target machine actively refused it.
+</code></pre>
+<p>This could be caused by your anti-virus software. Please check and turn it off if necessary. 
+It could be interfering and refusing connection to certain ports.</p>
+
+<h4 id="more-info">get more debug information</h4>
+<p>You can also view the output from <code>st-util</code> in the <strong>Adapter Output</strong> tab (check <code>OUTPUT</code> panel during debug -&gt; select <code>Adapter Output</code> from the drop down list).</p>
+
+<!-- ********************************************************************* -->
+<h3 id="debug-config-problems">Debug Config Problems</h3>
+<h4 id="cant-find-arm-on-chip-debug">Can’t find ARM On-Chip Debug</h4>
+<p>As explained in the <a href="#environ-explanation">above section</a>,
+COMP2300 should automatically initialise the debug config.</p>
+
+<p>If only “PlatformIO Debug” exists,
+it means that PIO IDE has forcefully replaced <code>launch.json</code> before COMP2300 extension could stop it.</p>
+
+<p>It could be a race condition happened between PIO IDE and COMP2300 extension, and 
+it could happen at the first opening of a cloned directory when 
+<code>.vscode/settings.json</code> doesn’t exist. If this is the case, a window reload should fix the problem.</p>
+
+<p>Otherwise it could be a trickier problem to figure out why COMP2300 extension didn’t start properly. Go to Help -&gt; Developer tools -&gt; Console, and see if there are any errors.
+It may fail because one of its dependency fails to activate.</p>
+
+<p>There was a problem with Cortex Debug failing to install its <code>0.1.15</code> update properly,
+causing <code>xml2js</code> package not found.
+If that’s the case, you might need to uninstall the COMP2300 extension, and delete the <code>~/.vscode/extensions/marus25.cortex-debug-0.1.15</code> folder, and re-install the extensions.
+This will reinstall Cortex Debug extension.</p>
+
+<!-- ********************************************************************* -->
+<h3 id="os-specific-problems">OS Specific Problems</h3>
+
+<h4 id="macos-installation-crash--pip-exception">[macOS] Installation crash — PIP: Exception</h4>
+<p>On some macOS machines when installing PlatformIO it might crash like the following:
+<img src="macOS-pip-ssl-crash-3d4d5c905a9ad3e9a8cd1d3af957848ed489638ea0cbd1aefe9e8d01c2111097.png" /></p>
+
+<p>This is because the SSL library is too old.
+So the solution is to install a newer version of OpenSSL library,
+and upgrade Python to make sure it uses this updated library.</p>
+
+<p>In the terminal, type:</p>
+<pre><code class="language-bash">brew install openssl
+</code></pre>
+<p>You will need <a href="https://brew.sh/">Homebrew</a> if you haven’t installed it.
+Then check the OpenSSL version in Python:</p>
+<pre><code class="language-bash">python -c "import ssl; print(ssl.OPENSSL_VERSION)"
+</code></pre>
+<p>The version should be the latest (<code>1.0.2n</code>).</p>
+
+<p>Otherwise you need to “re-“install Python</p>
+<pre><code class="language-bash">brew install python
+</code></pre>
+<p>Then open VSCode, press <code>Ctrl/Cmd + ,</code> to open up settings,
+put the following in <em>User settings</em>:</p>
+<pre><code class="language-bash">"terminal.integrated.env.osx": {"PATH": "/usr/local/opt/python/libexec/bin"}
+</code></pre>
+<p>Then reload window and wait for PlatformIO to finish installing core.</p>
+
+<h4 id="linux-device-permission">[Linux] Device permission issues</h4>
+<p>On some Linux machines you might have read/write permission issues in connecting
+to your discoboard. As a result, PlatformIO fails to upload (<code>pio run --target
+upload</code>) with the following error message:</p>
+
+<pre><code class="language-shell">Couldn't find any ST-Link/V2 devices
+</code></pre>
+
+<p>This problem can be solved by with the following commands:</p>
+
+<pre><code class="language-shell">#!/bin/sh
+
+sudo sh -c 'cat &gt; /etc/udev/rules.d/49-stm32.rules' &lt;&lt;EOF
+# 0483:374b - STM32F4 Dsicovery in USB Serial Mode (CN5)
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", ENV{ID_MM_DEVICE_IGNORE}="1"
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", ENV{MTP_NO_PROBE}="1"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", MODE:="0666"
+KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", MODE:="0666"
+
+# 0483:df11 - STM32F4 Discovery in DFU mode (CN5)
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", MODE:="0666"
+EOF
+
+sudo udevadm control --reload-rules
+
+echo "Unplug and replug your device to activate the new rules."
+</code></pre>
+
+<p>For your convenience, <a href="../../assets/scripts/permission-fix.sh">here’s a script</a> which does it all for you.</p>
+
+<p>Note: the product ID is found by doing:</p>
+
+<pre><code class="language-shell">dmesg | grep 'New USB device found, idVendor=0483'
+[195436.094414] usb 1-1.3: New USB device found, idVendor=0483, idProduct=374b
+</code></pre>
+
+<p>This should be the STM32L476 Discovery board product number.</p>
+
+<p>Further reading:</p>
+
+<ul>
+  <li><a href="https://github.com/texane/stlink/issues/486">https://github.com/texane/stlink/issues/486</a></li>
+  <li><a href="https://github.com/platformio/platform-ststm32/issues/74">https://github.com/platformio/platform-ststm32/issues/74</a></li>
+</ul>
+
+<h4 id="win-driver">[Windows] ST-Link Driver</h4>
+<p>On Windows you will need install ST-Link Debug Driver before Windows will
+connect to the discoboard. If you don’t, you’ll get an error like this:</p>
+
+<pre><code>WARN src\usb.c: Couldn't find any ST-Link/V2 devices *** [upload] Error -1
+</code></pre>
+
+<p>You can get the ST-Link driver <a href="../../assets/resources/en.stsw-link009.zip">here</a>. Just unzip it and follow the
+instruction in <code>readme.txt</code>.</p>
+
+<h4 id="windows-package-manager-problems">[Windows] package manager problems</h4>
+<p>You might see the following error:</p>
+
+<pre><code>PackageManager: Installing tool-stm32duino @ ~1.0.0
+Downloading [###---------------------------------] 10%
+Error: Please read http://bit.ly/package-manager-ioerror
+Warning! Package Mirror: [Errno 0] Error
+Looking for another mirror...
+Downloading [------------------------------------] 1%
+Error: Please read http://bit.ly/package-manager-ioerror
+Warning! Package Mirror: [Errno 0] Error
+Looking for another mirror...
+Error: Could not install 'tool-stm32duino' with version requirements '~1.0.0' for your system 'windows_amd64'.
+
+Please try this solution -&gt; http://bit.ly/faq-package-manager
+</code></pre>
+
+<p>You should probably <a href="http://docs.platformio.org/en/latest/ide/vscode.html#packagemanager-is-unable-to-install-tool">try the linked
+solution</a>.</p>
+
+<p>Basically, run the following in system terminal (Start Menu -&gt; <code>cmd</code>):</p>
+<pre><code class="language-bash">"C:/Users/&lt;your user name&gt;/platformio/penv/Scripts/platformio.exe" run -d "&lt;pio project dir&gt;" --target upload
+</code></pre>
+<p>replace <code>&lt;your user name&gt;</code> with your user name,
+and <code>&lt;pio project dir&gt;</code> with your cloned repository (probably <code>C:/Users/&lt;your user name&gt;/comp2300-2018-xxx</code>), 
+leave the quotation marks in.</p>
+
+<h4 id="windows-integrated-terminal-freezes">[Windows] integrated terminal freezes</h4>
+<p>On some Windows machine VSCode terminal tab freezes at start up.
+This happens irrespective of the shell selected.
+Because of this the debugger will not run.</p>
+
+<p>This is a VSCode problem, unrelated to PlatformIO.
+The cause of the problem is still unclear.
+There is no fix at the moment.</p>
+
+<h4 id="windows-disappearing-st-utilexe">[Windows] Disappearing st-util.exe</h4>
+<p>We have encountered some issue where the <code>st-util.exe</code> file is being removed. It
+<em>looks</em> like this is some strange interaction with
+<a href="https://en.wikipedia.org/wiki/Avast_Antivirus">Avast</a> but it’s hard to tell for
+sure. If you’re on Windows and you have errors mentioning <code>st-util.exe</code>, it is
+probably a good idea to check that the file is still there:</p>
+
+<ol>
+  <li>navigate to <code>C:\Users\&lt;your name&gt;\.platformio\packages\tool-stlink</code></li>
+  <li>check if the <code>st-util.exe</code> file is present—if it is, your problem is
+elsewhere</li>
+  <li>if it <em>is</em> missing, go back up one folder to <code>packages</code> and delete the
+<code>tool-stlink</code> folder</li>
+  <li>run the PlatformIO upload command again to re-download the file (this may
+need to be done from command line—you’ll need <a href="#adding-platformio-to-windows-path">platformio on your
+path</a>)</li>
+</ol>
+
+<p>If you still have issues after this, consider disabling your antivirus or
+changing to a different provider.</p>
+
+<h4 id="adding-platformio-to-windows-path">[Windows] Adding platformio to windows path</h4>
+<ol>
+  <li>Open a file explorer</li>
+  <li>right click <em>This PC</em> and select properties</li>
+  <li>in the new window select <em>Advanced system settings</em> on the left</li>
+  <li>select <em>Environment Variables</em></li>
+  <li>under System variable select Path and click edit</li>
+  <li>click New</li>
+  <li>enter the location of your platformio Scripts file, it should look something like this: <code>C:\Users\&lt;your name&gt;\.platformio\penv\Scripts</code></li>
+  <li>Keep clicking Ok until you get back to the System window.</li>
+</ol>
+
+<p>PlatformIO commands should now work in your command prompt.</p>
+<div class="footnotes">
+  <ol>
+    <li id="fn:ecosystem">
+
+      <p>The <em>ecosystem</em> thing means that PlatformIO isn’t just for writing a
+specific program on a specific board with a specific “framework”. You can
+read more about it in the
+<a href="http://docs.platformio.org/en/latest/ide/vscode.html#ide-vscode">documentaion</a>
+if you’re interested. <a href="#fnref:ecosystem" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </div>
+    
+</div>
+
+<footer>
+
+  <p>This material was written and prepared by Dr. Ben Swift for <a href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
+
+  </footer>
+
+  </body>
+
+  </html>

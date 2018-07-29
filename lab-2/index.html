@@ -1,0 +1,703 @@
+<html>
+
+<head>
+
+  <link href="../assets/css/www.min.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="../assets/css/main.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/code-cadets-custom.css" rel="stylesheet" type="text/css" />
+
+
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-light-499d377ed666d625078a9842a96e636c4985e27ed4c550836ba564ab5f09d05e.css">
+  <script type="text/javascript" src="../assets/js/highlight/highlight.pack-af76728dfe3d98887947abb9090adcb18dd6d1ad0f092d60360179561eee1e19.js"></script>
+
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <title>Lab 2: First Machine Code</title>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1>Code Cadets Extension 2018</h1>
+
+  </header>
+
+    <div id="body-wrap" role="main">
+      <div id="body">
+
+        <div id="content">
+  
+  <div class="marginleft ">
+  
+  
+    
+    
+      <div> 
+        <h1 class="post-title">Lab 2: First Machine Code</h1>
+    </div>
+  
+  </div>
+  
+  
+      <div class="doublewide nomargintop" style="float:none; display:block">
+        
+<div class="info-box" style="margin-bottom: 20px;">
+  <p>In response to the software issues in week 1, we’ve updated the COMP2300 VSCode
+extension (now at version <code>0.3.5</code>) <em>and</em> the
+PlatformIO config (in the <code>platformio.ini</code> file). Check that you’ve got this version installed (in the
+Extensions viewlet).</p>
+
+  <p>This means you’ll need to download &amp; wait for the new PlatformIO things to
+install, and this might take a <strong>long</strong> time—up to an hour on the lab
+machines, but probably quicker on your own machine. Again, sorry about this, and
+thanks for your patience—hopefully it’ll be the last time.</p>
+
+  <p>As soon as you get into your lab (or even before!) you should clone the <a href="https://gitlab.cecs.anu.edu.au/comp2300/2018/comp2300-2018-lab-2">lab 2
+template</a> in VSCode to start the download &amp; unpack
+process on your machine. While you’re waiting, jump into small groups with a
+labmate who <em>does</em> have it working on their computer and work with them until
+your machine finishes loading.</p>
+</div>
+
+<h2 id="outline">Outline</h2>
+
+<p>Before you attend this week’s lab, make sure:</p>
+
+<ol>
+  <li>you can fork, commit &amp; push your work to GitLab</li>
+  <li>you can use VSCode to edit assembly (<code>.S</code>) files</li>
+  <li>you can connect your discoboard to your computer and start a debugging
+session.</li>
+  <li>you have read the lab content below</li>
+</ol>
+
+<p>If you’re not confident about that stuff then feel free to have a look over the
+<a href="../01-intro/index.html">week 1 lab</a> again.</p>
+
+<p>In this week’s lab you will:</p>
+
+<ol>
+  <li>write your own first pieces of machine code</li>
+  <li>learn about how the instructions (i.e. the program) are represented and
+executed on your discoboard</li>
+  <li>learn a few assembler directives for getting data into your program</li>
+</ol>
+
+<p>Useful references (no need to look at these just yet, we’ll step you through
+when you’ll need each one):</p>
+
+<ul>
+  <li><a href="../../assets/manuals/ARMv7-cheat-sheet.pdf">ARM assembly cheat sheet</a></li>
+  <li><a href="../../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference Manual</a></li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>In the week 1 lectures you saw how your CPU/MCU is built out of logic gates
+which are built into different components, including registers for storing
+memory and adders (as part of the
+<a href="https://en.wikipedia.org/wiki/Arithmetic_logic_unit">ALU</a>) for adding numbers
+together.</p>
+
+<p>Today you will see how to explain to your CPU that your plan is to calculate
+<code>2+2</code>, and see how <strong>words</strong> (i.e. numbers) in memory can be formed and
+interpreted as <strong>opcodes</strong> (operation codes) which will instruct your CPU to do
+things (e.g. add two values).</p>
+
+<p>Even though this is a “first steps” type of lab, the things you’ll do in this
+lab are essential for this course, so make sure you understand <em>everything</em> in
+your program what is happening in front of you. Anything you leave hanging here
+will probably haunt you in the coming weeks. Don’t feel like everyone else is
+getting it and you’re the only one that’s lost—that’s <em>definitely</em> not the
+case.</p>
+
+<h2 id="two-plus-two">Exercise 1: 2+2</h2>
+
+<p>Fork &amp; clone the <a href="https://gitlab.cecs.anu.edu.au/comp2300/2018/comp2300-2018-lab-2">lab 2 template</a> to your machine (just
+like you did <a href="../01-intro/index.html">last week</a>).</p>
+
+<p>Your job in this first exercise is to write an assembly program which calculates
+<code>2+2</code> and leaves the result in register 1 (<code>r1</code>).</p>
+
+<p>Remember from last week’s lab that you can see the values in your discoboard’s
+registers (assuming there’s a debugging session running and the execution is
+paused) in the registers pane:</p>
+
+<p><img src="register-viewlet-0e721d077e62c8607190a5bee60deb53c39de4f360f065227340812c9318e179.png" /></p>
+
+<p class="info-box">You can set the numeric format for a specific register in the register view.
+Simply right click on the register, select “set number format” and then select
+the desired format. This will help you make sense of the value of a register.</p>
+
+<h3 id="arm-assembly-syntax">ARM assembly syntax</h3>
+<p>This is probably the first time you’ve written any ARM assembly code, so for
+this course we’ve prepared a <a href="../../assets/manuals/ARMv7-cheat-sheet.pdf">cheat
+sheet</a> to help you out.
+It looks pretty intimidating at first—mostly because it crams a lot of
+information into a small space. So let’s pick one line of the cheat sheet—the
+<code>sub</code> instruction—and pick it apart.</p>
+
+<p>First, the <strong>syntax</strong> column:</p>
+
+<pre><code class="language-ARM">sub{s}&lt;c&gt;&lt;q&gt; {&lt;Rd&gt;,} &lt;Rn&gt;, &lt;Rm&gt; {,&lt;shift&gt;}
+</code></pre>
+
+<p>The first token on the line is the instruction name, and after that is the
+(comma-separated) argument list. Just like any other programming language, once
+you understand the syntax you can read and understand the code. In fact, since
+it’s a smaller language (there are only a couple of dozen instructions) it’s
+probably easier to read than languages with a richer syntax (I’m looking at
+<em>you</em>, Haskell).</p>
+
+<ul>
+  <li>
+    <p>anything in braces (<code>{}</code>) is <em>optional</em>, e.g. the <code>s</code> at the end of <code>sub{s}</code>
+means that it can be either <code>sub</code> or <code>subs</code></p>
+  </li>
+  <li>
+    <p>the <code>&lt;c&gt;</code> and <code>&lt;q&gt;</code> parts relate to the <strong>condition codes</strong> and <strong>opcode
+size</strong> boxes on the second page of the cheat sheet - they’re <em>also optional</em> and
+you probably won’t need them for this first exercise</p>
+  </li>
+  <li>
+    <p><code>{&lt;Rd&gt;,}</code> is the <strong>d</strong>estination register (e.g. <code>r3</code> or <code>r11</code>), which is
+optional because if it’s omitted the result will be stored in the <code>&lt;Rn&gt;</code>
+register (which is why the <strong>semantic</strong> column says <code>Rd(n) := ...</code>)</p>
+  </li>
+  <li>
+    <p><code>&lt;Rn&gt;, &lt;Rm&gt;</code> are the two operands (arguments) for the <code>sub</code> instruction</p>
+  </li>
+  <li>
+    <p>finally, the <em>optional</em> <code>{,&lt;shift&gt;}</code> part is related to the barrel shifter
+(for bit-shifting operations) built alongside the discoboard’s ALU - you don’t
+have to worry about this too much for the moment but it’ll come in handy later</p>
+  </li>
+</ul>
+
+<p>There are a couple of other parts of the syntax which aren’t covered in the
+<code>sub</code> instruction:</p>
+
+<ul>
+  <li>
+    <p>constant values (e.g. numbers) are written normally (e.g. <code>24</code> for decimal
+numbers) although you can add a prefix to indicate a different base: <code>0b</code> for
+binary (e.g. <code>0b1101101</code>), <code>0o</code> for octal (e.g. <code>0o125</code>) or <code>0x</code> for
+hexadecimal (<code>0xef20</code>)</p>
+  </li>
+  <li>
+    <p>when it comes to load &amp; store operations, square brackets <code>[]</code> indicate that
+the instruction should use the memory address in the register, e.g. <code>[r2]</code>
+tells the discoboard to “use the memory address in <code>r2</code>” for that instruction</p>
+  </li>
+</ul>
+
+<p>You won’t need to know all of this stuff to complete this lab, so just remember
+that it’s here if you need to come back to it. Let’s keep going…</p>
+
+<p>The <strong>semantic</strong> column on your cheat sheet describes what the instruction does.
+For example, the semantic for the <code>sub</code> instruction is <code>Rd(n) := Rn -
+Rm{shifted}</code>, which in English translates to something like:</p>
+
+<blockquote>
+  <p>in the <code>Rd</code> register (or <code>Rn</code>, if there are only two register operands
+present) store the result of subtracting the value in the <code>Rm</code> register (with
+an optional bit-shift, if present) from the value in the <code>Rn</code> register</p>
+</blockquote>
+
+<p>You can probably see why we use assembly language for telling our CPU what to do
+rather than English—it’s much less wordy.</p>
+
+<p>The <strong>flags</strong> column of the cheat sheet specifies which of the special condition
+code flags that instruction sets if the optional <code>s</code> suffix is present. (We’ll
+cover this in next week’s lab, but if you’re curious there’s a box on the second
+page of the cheat sheet which lists the flags.)</p>
+
+<p class="info-box">Whew, that was a bit of an information dump. But it was worth picking it apart in
+detail, since you’ll be looking at the cheat sheet (and ARM instruction syntax)
+a lot.</p>
+
+<h3 id="the-task">The task</h3>
+
+<p>To actually complete your “2 + 2” task, you’ll need to</p>
+<ol>
+  <li>get number <code>2</code> into a register</li>
+  <li>add <em>another</em> <code>2</code> to it and put the result in <code>r1</code></li>
+</ol>
+
+<p>Look over the cheat sheet—which assembly instructions allow you to specify
+numeric contsants/literals in a register? There are also a number of machine
+instructions which will implement an addition—which one do you want, and
+<em>why?</em></p>
+
+<p>Once you’ve written a program which you think will do what you want, step
+through and make sure that the value which <code>r1</code> holds at the end is actually
+<code>4</code>.</p>
+
+<p class="push-box">Make a commit now that you have finished Exercise 1. It’s a good idea to keep a
+version once you have completed each exercise in the lab; that’s what version
+control system is for, right?</p>
+
+<h2 id="reverse-engineering">Exercise 2: reverse engineering</h2>
+
+<p>Now we really look under the hood and leave no bit unturned. Start a debugging
+session with your program from the previous exercise and step through until you
+get to <code>main</code>, then leave it “hanging”—do not execute any further.</p>
+
+<p class="think-box">Do you know where each of your “number 2”s are represented in your program when
+it’s actually running on your discoboard?</p>
+
+<p>To do that we need to be able to view the memory in the disco board. In VSCode
+you can look at your memory directly using the <strong>Memory View</strong>: type
+<code>Cortex-Debug: View Memory</code> in the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
+palette</a>
+(or some part of it—the command palette “fuzzy matches” on command names).
+VSCode will then ask you to input the <strong>starting address</strong> and the <strong>number of
+bytes</strong> to read (e.g. <code>42</code> bytes).</p>
+
+<p><img src="memory-view-4fb5c0ef63dd7f559b1b7d3886c16cfc5d800747516fddc565761c4a0b61374c.png" /></p>
+
+<p>This might look overwhelming, but the 2D “grid” layout is pretty simple: the hex
+numbers down the left hand side are the base memory addresses, and the
+hex numbers along the top represent the “offset” of that particular byte from
+the base address. So, to work out the exact address of a particular byte
+(remember: 2 hex digits == 1 byte) you read along the <em>row</em> to get the base
+address, and read down the <em>column</em> to get the offset, and add them together
+(base+offset) to get the address of the byte. Simples!</p>
+
+<p class="talk-box">You can <strong>definitely</strong> find the bytes in memory which correspond to the
+instructions you wrote in your <code>main.S</code> file in this view. The trick is figuring
+out where to look—what should the starting address be? Even your humble
+discoboard has a <strong>lot</strong> of addressable memory. Discuss with your lab
+neighbor—where should you look to find your program? What if I told you that
+the (<code>pc</code>) register stood for <code>p</code>rogram <code>c</code>ounter?</p>
+
+<p>If you get stuck, here’s a trick which is often helpful in reverse engineering
+things—try and put some <em>known</em> values into the program so that we know what
+we’re looking for when we’re staring at the memory view.</p>
+
+<p>There’s an assembler directive called
+<a href="https://sourceware.org/binutils/docs/as/hword.html#hword"><code>.hword</code></a> which you
+can use to put 16-bit numbers into your program (“hword” is short for half-word,
+and comes from the fact that your discoboard’s CPU uses 32-bit “words”).</p>
+
+<p>Modify your program to use the <code>.hword</code> directive to put some data into your
+program.</p>
+
+<pre><code class="language-arm">.syntax unified
+.global main
+.type main, %function
+
+main:
+  .hword 0xdead
+  .hword 0xbeef
+  b main
+.size main, .-main
+</code></pre>
+
+<p>Build &amp; upload your program and open a memory view and go to the address of your
+first instruction (or a bit before—as long as the number of bytes you display
+spans over the memory region you’re interested in). You might need to re-size
+the different viewlets to make sure you can see all the columns of the memory
+view. Can you see the <code>0xdead</code> and <code>0xbeef</code> values you put into your program? If
+you can’t see them <em>exactly</em>, can you see something which looks suspiciously
+like them? What do you notice?</p>
+
+<h3 id="endianness">Endianness</h3>
+
+<p>To make sense of the numbers displayed in the memory view, we need to talk about
+<em>endianness</em>.</p>
+
+<p>Values are stored in memory as individual <strong>bytes</strong> (i.e. 8-bit numbers, which
+can be represented with two hex digits). <strong>Endianness</strong> refers to the order in
+which these small 8-bit bytes are arranged into larger numbers (e.g. 32-bit
+<strong>words</strong>). In the <strong>little-endian</strong> format, the byte stored at the lowest
+address is the <strong>least</strong> significant byte; where as in <strong>big-endian</strong> format,
+the byte stored at the lowest address is the <strong>most</strong> significant byte.</p>
+
+<p>Here’s an example: suppose we have the number <code>0x01</code> stored at a lower memory
+address (e.g. <code>0x000001e0</code>), and the number <code>0xF1</code> stored at a higher memory
+address (<code>0x000001e1</code>), as shown below:</p>
+
+<p><img src="endian-example-6f373fdc0b02a4b72307d458121190649df3c4bd16208c6728167596bb933a23.png" /></p>
+
+<p>Under the <strong>little-endian</strong> format, when these two 8-bit numbers are read as one
+16-bit half-word number by the CPU, it represents <code>0xF101</code> (the <code>0x01</code> at the
+lower address is treated as less significant). And under the <strong>big-endian</strong>
+format, it represents <code>0x01F1</code> (the <code>0x01</code> at the lower address is treated as
+more significant).</p>
+
+<p>When reading four bytes from the memory, the CPU can read them as two 16-bit
+half-words, or as one 32-bit word. The endianness format applies everytime when
+combining bytes into bigger words. The following diagram illustrates this using
+the little-endian format:</p>
+
+<p><img src="little-endian-cedb2199f2106f3df54f19cab67b47935401a9b4d89459cd42d68ab425ddc964.jpg" /></p>
+
+<p>You need to be aware of this byte ordering to make sense of the memory view. It
+might be painful and confusing at the start, but you’ll get used to it.</p>
+
+<p class="extension-box">How might you figure out on your discoboard’s Cortex-M4 CPU whether a 32-bit
+instruction is read as one 32-bit word or as two 16-bit half-words? (hint:
+have a look at A5.1 in the <a href="../../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference Manual</a>).</p>
+
+<p class="info-box">According to <a href="https://en.wikipedia.org/wiki/Endianness#Etymology">Wikipedia</a>,
+Danny Cohen introduced the terms <em>Little-Endian</em> and <em>Big-Endian</em> for byte
+ordering in an article from 1980. In this technical and political examination of
+byte ordering issues, the “endian” names were drawn from Jonathan
+Swift’s<sup id="fnref:no-relation"><a href="#fn:no-relation" class="footnote">1</a></sup> 1726 satire, Gulliver’s Travels, in which civil war erupts
+over whether the big end or the little end of a boiled egg is the proper end to
+crack open, which is analogous to counting from the end that contains the most
+significant bit or the least significant bit.</p>
+
+<h3 id="instruction-encodings">Instruction encoding(s)</h3>
+
+<p>Now that you know how bytes fit together into words, let’s get back to the task
+of figuring out how the instructions in your program are encoded in memory.</p>
+
+<p>To help, you can use the known half-words you put into your program earlier to
+help you out. Update your program like so to add a single instruction (i.e. one
+line of assembly code) from the your 2+2 program you wrote in <a href="#two-plus-two">Exercise
+1</a>.</p>
+
+<pre><code class="language-arm">.syntax unified
+.global main
+.type main, %function
+
+main:
+  .hword 0xdead
+  @ put a single "real" assembly insruction here from your 2+2 program
+  .hword 0xbeef
+  b main
+.size main, .-main
+</code></pre>
+
+<p>Build, upload and start a new debug session (but don’t run it, just leave it
+paused) then find your program again in the memory view. What does your
+instruction look like in memory? If it helps, try making a note of the bytes,
+then modify the instruction slightly (e.g. change the number, or the register
+you’re using) and see how the bytes change in memory (you’ll need to re-build &amp;
+run your program and call the view memory command each time you do).</p>
+
+<p class="talk-box">Discuss with your neighbour: what do you think the different bits (and bytes) in
+the instruction encoding <em>mean</em>? How does the discoboard know what to do with
+them? And if you’ve figured that out, why doesn’t your program actually <em>work</em>?</p>
+
+<p>To fully make sense of these instruction encodings you need more than just your
+cheat sheet, you need the <a href="../../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference
+Manual</a>).
+You need to dig to the deepest levels, by going to <strong>section A7.7</strong>
+<em>Alphabetical list of ARMv7-M Thumb instructions</em> (page A7-184). Use the
+bookmarks in your pdf viewer to navigate to the relevant instructions inside
+this huge 400 page section.</p>
+
+<p>For each instruction you will see a number of encodings. They detail bit-by-bit
+the different ways of specifying the machine instructions that your discoboard
+CPU understands. You may also find this number format conversion tool helpful:</p>
+
+<script>
+ "use strict";
+
+ // The original logarithmic left-pad that rose to fame
+ function padZeroes(input, length) {
+
+   if (input.length > length){
+     return input;
+   }
+
+   let padChar = "0";
+   return padChar.repeat(length - input.length) + input;
+ }
+
+ function formatWithGrouping(string) {
+   // currently only works if string length mod 4 == 0
+   let splitter = (coll, x, i) => {
+     return (i % 4 == string.length % 4 ? " " : "") + x + coll;
+   }
+   return string.split("").reduceRight(splitter).trim();
+ }
+
+ function twosComplement(value, bits) {
+   if (value >= 0) {
+     return value;
+   } else {
+     return Math.pow(2, bits) + value;
+   }
+ }
+
+ function fieldElement(id) {
+   return document.getElementById(id + "_val");
+ }
+
+ function recalc(kind) {
+   var new_value = fieldElement(kind).value.replace(/ /g, "");
+   if (kind === "hex") {
+     new_value = parseInt(new_value, 16);
+   } else if (kind === "bin") {
+     // need to strip the 0b prefix because js is dumb
+     new_value = parseInt(new_value.substring(2), 2);
+   } else if (kind === "dec") {
+     new_value = parseInt(new_value);
+   } else if (kind === "str") {
+   }
+
+   if (isNaN(new_value)) {
+     new_value = 0;
+   }
+
+   if (kind != "hex") {
+     fieldElement("hex").value = "0x " + formatWithGrouping(padZeroes(twosComplement(new_value, 32).toString(16), 8));
+   }
+   if (kind != "bin") {
+     fieldElement("bin").value = "0b " + formatWithGrouping(padZeroes(twosComplement(new_value, 32).toString(2), 32));
+   }
+   if (kind != "dec") {
+     fieldElement("dec").value = new_value;
+   }
+ }
+</script>
+
+<style>
+ .conversion-widget {
+   width: 100%;
+ }
+
+ .conversion-widget .basetype {
+   width: 4em;
+   font-weight: 900;
+ }
+
+ .conversion-widget td {
+   padding: auto 0;
+ }
+
+ .conversion-widget input {
+   width: 100%;
+   text-align: right;
+   box-sizing: border-box;
+   font-size: 100%;
+   font-family: 'Source Code Pro', monospace;
+ }
+</style>
+
+<table class="conversion-widget">
+  <tbody>
+    <tr>
+      <td class="basetype">Decimal</td>
+      <td><input oninput="recalc('dec')" id="dec_val" value="0" /></td>
+    </tr>
+    <tr>
+      <td class="basetype">Hex</td>
+      <td><input oninput="recalc('hex')" id="hex_val" value="0x 0000 0000" /></td>
+    </tr>
+    <tr>
+      <td class="basetype">Binary</td>
+      <td><input oninput="recalc('bin')" id="bin_val" value="0b 0000 0000 0000 0000 0000 0000 0000 0000" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="push-box">Commit your “reverse engineering” program with a comment about what the
+instruction looks like in memory. It doesn’t matter that it doesn’t actually run
+at this point—you’ll get there in the next exercise.</p>
+
+<p class="extension-box">Can you tell which specific encoding has been used? Note that not every encoding
+can express every version of the instruction, but sometimes a more complex
+encoding can also express what the a simpler form could have done as well. Can
+you hint the assembler towards the specific encoding you want?</p>
+
+<h2 id="excercise-3-hand-crafted-artisinal-organic-instructions">Excercise 3: hand-crafted, artisinal organic instructions</h2>
+
+<p>Now that you’ve identified the spot in memory where your instructions live, in
+this exercise we turn our approach around and program the CPU by writing
+specific numbers directly to memory locations.</p>
+
+<p>Now, instead of calculating <code>2+2</code>, you are going to make the CPU calculate <code>3-1</code>
+by putting the right numbers into memory.</p>
+
+<p>In fact, you have been doing this all along, except that the assembler has
+helped you in calculating those numbers. Replace your program with the following
+assembly code:</p>
+
+<pre><code class="language-arm">.syntax unified
+.global main
+.type main, %function
+
+main:
+  .hword 0xffff
+  .hword 0xffff
+  b main
+.size main, .-main
+</code></pre>
+
+<p>only this time instead of the <code>0xffff</code>s you need to figure out the actual values
+which will make the CPU load <code>3</code> into a <code>r1</code> and subtract <code>1</code> from it. Remember
+that it’ll be <em>similar</em> to the words you looked at in the memory viewer earlier,
+but some of the bits will be different (since we’re dealing with <code>-</code>, <code>3</code> and
+<code>1</code> instead of <code>+</code>, <code>2</code> and <code>2</code>).</p>
+
+<p>Note the line at the bottom:</p>
+
+<pre><code class="language-arm">.size main, .-main
+</code></pre>
+
+<p>This tells the assembler the size of the <code>main</code> function, and it is essential
+for the <strong>disassembler</strong> to work correctly. The disassembler view can be opened
+by typing <code>Cortex-Debug: View Disassembly (Function)</code> in the command palette
+during an active debug session (thus you need to first compile, upload your code
+and start a debug session). It will then ask for which function to disassemble,
+type the function name (e.g. <code>main</code>). It will look something like this:</p>
+
+<p><img src="disassembly-view-22ab2e4fa9d8c95e87dc6225c5b205ed56509ba9bd604ccfe058b096627c7583.png" /></p>
+
+<p>Bring up the disassembler view for <code>main</code>—you’re now looking at the program as
+it will be understood by the CPU. You can even do step debugging in disassembly
+view; it’s automatic based on which source tab you have active<sup id="fnref:flaky"><a href="#fn:flaky" class="footnote">2</a></sup>.</p>
+
+<p class="think-box">Looking ad the disassembled code (i.e. the way the CPU will interpret the
+instructions) did you see what you intended? Will your new, hand-assembled
+program show the correct result in <code>r1</code> after it has been run? If it doesn’t,
+what might have gone wrong?</p>
+
+<p>You can now cheer as loud as your upbringing allows that you will never again
+have to hand-craft the bits needed to instruct the CPU to do this, and you can
+leave this job to the assembler from now on.</p>
+
+<p>As a side effect, you also learnt something about security: your system can be
+compromised by injecting some data into memory (an array of numbers, a string or
+anything which the host system would accept) and making the CPU somehow stumble
+into executing it. Classically this is done in form of buffer overruns in C
+programs (very few other languages allow that sort of thing) where you can make
+your program write data into places where the executable code lives… and
+bingo!</p>
+
+<p class="talk-box">Discuss with your lab neighbour: after completing this exercise, how would you
+explain the way a CPU works to your grandma/grandpa?</p>
+
+<p class="push-box">Make a commit now that you’ve knocked down Exercise 3. Congrats!</p>
+
+<h2 id="exercise-4-bit-vectors">Exercise 4: bit vectors</h2>
+
+<p>Load some new data into register <code>r1</code> by adding this assembly code to your
+program:</p>
+
+<pre><code class="language-arm">cope:
+  .ascii "COPE"
+
+  @ load "COPE" into r1
+  ldr r1, cope
+
+loop:
+  nop
+  b loop
+</code></pre>
+
+<p>This code introduces a new compiler directive: <strong>labels</strong>.
+From <a href="https://sourceware.org/binutils/docs/as/Labels.html#Labels">the documentation</a>:</p>
+
+<blockquote>
+  <p>A label is written as a symbol immediately followed by a colon `:’. The symbol
+then represents the current value of the active location counter, and is, for
+example, a suitable instruction operand. You are warned if you use the same
+symbol to represent two different locations: the first definition overrides any
+other definitions.</p>
+</blockquote>
+
+<p>So in the code above there are two new labels: <code>cope</code> and <code>loop</code>. A label is a
+way of attaching a human-readable name to a location in your sequence of
+instructions (i.e. your program). But always remember that it’s just a location
+marker, and once your program is running on your board it will have a specific
+memory address which you can store in a register, do arithmetic on, etc.</p>
+
+<p class="think-box">What will you see in <code>r1</code> after the <code>ldr r1, cope</code> line? 
+Can you guess the address of <code>cope</code> and find it in the memory viewer?</p>
+
+<p>You’ll notice a
+new <a href="https://sourceware.org/binutils/docs/as/Ascii.html#Ascii"><code>.ascii</code></a>
+compiler directive in this code: this allows you to put data into your program
+using the <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> encoding. Fundamentally,
+this is no different to the <code>.hword</code> directive earlier, only that instead of
+using numbers (e.g. decimals like <code>5</code> or hexadecimals like <code>0xA2</code>) you’re using
+the ASCII character code to determine exactly what bytes the assembler puts in
+your program. But it’s all just bytes in the end—as you’ll soon see.</p>
+
+<p>Your goal in this exercise is to isolate and shift individual bytes within the
+<code>"COPE"</code> word:</p>
+
+<ol>
+  <li>first, change it into <code>"HOPE"</code> and store in <code>r2</code></li>
+  <li>then, change it into <code>"HOPS"</code> and store in <code>r3</code></li>
+</ol>
+
+<p>Each of these steps requires isolating and manipulating one 8-bit (1-character)
+part of the 32-bit word without messing with the rest of it. As a hint, in the
+ASCII character encoding you can add 5 to change a <code>C</code> into an <code>H</code> and add 14 to
+change an <code>E</code> into an <code>S</code> (again, remember to look at your cheat sheet). The new
+characters need to be shifted back into the correct position and then need to
+replace the appropriate character in the original word.</p>
+
+<p>It might be helpful to use a piece of paper here: write out what the <code>"COPE"</code>
+data looks like in memory (remember endianness!), and figure out what shuffles
+and logical operations you need to make the transformations into <code>"HOPS"</code>. If
+you’re stuck, think what bit-vector operations will remove, replace or combine
+information in your registers.</p>
+
+<p>There are several ways to do this, how many can you think of? Show your program
+to your neighbour or tutor to get ideas about how it could be done differently.</p>
+
+<p class="extension-box">You might have used one (or more) large numbers in your bit manipulation
+adventures. How many bits is that number? Do you think it will fit into the
+instruction encoding? Have a look at the disassembly, and cross check it with
+the instruction manual. Can you make sense of what’s happening here? (Hint:
+<a href="https://alisdair.mcdiarmid.org/arm-immediate-value-encoding/">this blog post</a>
+might be helpful to you). Give it a crack, but we will revisit this again later
+in the course.</p>
+
+<p class="push-box">Finalise your program so that the <code>main</code> function performs the <code>"COPE"</code> -&gt;
+<code>"HOPE"</code> -&gt; <code>"HOPS"</code> transformation and leaves the <code>"HOPS"</code> value in <code>r2</code>.
+Commit &amp; push your changes up to your fork on the GitLab server.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>Congratulations! In this week’s lab you learned how to</p>
+
+<ol>
+  <li>watch what happens in memory as your program executes</li>
+  <li>use the <code>.hword</code> and <code>.ascii</code> assembler directives to insert bytes into your
+programs</li>
+  <li>figure out the <em>exact</em> sequence of bits to get the discoboard to do what you want</li>
+  <li>use simple bit-shifting instructions to isolate and manipulate specific bits
+in a word</li>
+  <li>read and write numbers in different bases: decimal, binary, hex</li>
+</ol>
+
+<p>Next week, you’ll start taking this information to construct (and play!) a
+simple game.</p>
+
+<p class="info-box">Make sure you logout to terminate your session, and pack up your board and USB
+cable carefully.</p>
+<div class="footnotes">
+  <ol>
+    <li id="fn:no-relation">
+      <p>no relation to Ben <a href="#fnref:no-relation" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:flaky">
+      <p>though this automatic switching may be a bit flaky <a href="#fnref:flaky" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </div>
+
+<footer>
+
+  <p>This material was written and prepared by Dr. Ben Swift for <a href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
+
+  </footer>
+
+  </body>
+
+  </html>
