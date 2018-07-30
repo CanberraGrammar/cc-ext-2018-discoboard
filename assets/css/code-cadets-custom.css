@@ -9,6 +9,10 @@ header h1 {
     padding-left: 20px;
 }
 
+header h1 a:hover {
+	text-decoration: none;
+}
+
 #body-wrap {
 	padding-top: 28px;
 }

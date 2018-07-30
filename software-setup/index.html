@@ -5,16 +5,16 @@
   <link href="../assets/css/www.min.css" rel="stylesheet" type="text/css" media="screen" />
   <link href="../assets/css/main.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/code-cadets-custom.css" rel="stylesheet" type="text/css" />
-
+  <link href="../assets/css/code-cadets-custom-dark.css" rel="stylesheet" type="text/css" />
 
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
-  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-light-499d377ed666d625078a9842a96e636c4985e27ed4c550836ba564ab5f09d05e.css">
+  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-dark.css">
   <script type="text/javascript" src="../assets/js/highlight/highlight.pack-af76728dfe3d98887947abb9090adcb18dd6d1ad0f092d60360179561eee1e19.js"></script>
 
   <script>hljs.initHighlightingOnLoad();</script>
 
-  <title>Software Setup</title>
+  <title>Lab 0: Software Setup</title>
 
 </head>
 
@@ -22,7 +22,7 @@
 
   <header>
 
-    <h1>Code Cadets Extension 2018</h1>
+    <h1><a target="_blank" href="../index.html">Code Cadets Extension 2018</a></h1>
 
   </header>
 
@@ -37,77 +37,61 @@
     
     
       <div> 
-        <h1 class="post-title">Software setup</h1>
+        <h1 class="post-title">Lab 0: Software setup</h1>
     </div>
   
   </div>
   
   
       <div class="doublewide nomargintop" style="float:none; display:block">
-        <p class="info-box"><strong>Update:</strong> if you’re having trouble in the CSIT computer labs, we’ve added a
-script to help you out. Open up a terminal and type <code>setup-platformio</code> then hit
-<code>return</code> and it’ll do all the things for you (if you haven’t set up anything yet
-on your lab account this still might take ~30mins or so, but shouldn’t take much
-longer than that). If everything <em>already</em> works on your lab machine running the
-<code>setup-platformio</code> script shouldn’t break anything, but you don’t have to do it
-either.</p>
 
-<p>The Integrated Development Environment (IDE) we use in COMP2300/6300 is <a href="https://code.visualstudio.com/">Visual
+<p>The Integrated Development Environment (IDE) we use is <a target="_blank" href="https://code.visualstudio.com/">Visual
 Studio Code</a> (we’ll usually call it <strong>VSCode</strong>
 for short). VSCode is a generic text editor, which means that it’s really good
 at editing text, but doesn’t care too much what that text is/represents.
 However, VSCode also allows people to write “extensions” to help VSCode write &amp;
 run code for different programming languages.</p>
 
-<p>One such extension is called <a href="http://platformio.org/">PlatformIO</a>, which is an
+<p>One such extension is called <a target="_blank" href="http://platformio.org/">PlatformIO</a>, which is an
 “an open source ecosystem<sup id="fnref:ecosystem"><a href="#fn:ecosystem" class="footnote">1</a></sup> for IoT (Internet of Things) development”.</p>
 
-<p>We’ll only be dealing with one specific “board” (your stm32 l476g discoboard) in
-this course, so we won’t use all of the PlatformIO functionality. Still, it
+<p>We’ll only be dealing with one specific “board” (your stm32 l476g discoboard) so we won’t use all of the PlatformIO functionality. Still, it
 provides the compiler, assembler and other important components for writing &amp;
 running code on your discoboard. You don’t have to master everything straight
-away, we’ll step you through it in the labs (so make sure you attend all the
-labs!).</p>
+away, we’ll step you through it in the labs.</p>
 
 <h2 id="installation">Installation</h2>
-
-<p class="info-box">If you’re on one of the CSIT Ubuntu lab machines, then most of this is already
-done, although if it’s the first time you’ve ever used VSCode in the CSIT labs
-then you’ll still have to install the VSCode extensions—jump to step 3.</p>
 
 <p>To set this all up on a new machine (e.g. your own laptop) here are the steps:</p>
 
 <ol>
   <li>
-    <p>read the COMP2300/6300 <a href="../../policies/index.html#own-machine-policy">own machine policy</a></p>
-  </li>
-  <li>
-    <p><a href="https://code.visualstudio.com/">download &amp; install VSCode</a> (works on macOS,
+    <p><a target="_blank" href="https://code.visualstudio.com/">download &amp; install VSCode</a> (works on macOS,
 Linux &amp; Windows)</p>
   </li>
   <li>
-    <p>open VSCode, <a href="https://code.visualstudio.com/docs/editor/extension-gallery">open the <strong>Extensions</strong>
-view</a></p>
+    <p>open VSCode, <a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery">open the <strong>Extensions</strong>
+view</a> (<strong>View</strong> menu > <strong>Extensions</strong>)</p>
   </li>
   <li>
     <p>search for and install the <strong>COMP2300</strong> extension (version <code>0.3.5</code>, id
 <code>anucecsit.comp2300-extension-pack</code>)</p>
   </li>
   <li>
-    <p>reload the VSCode window (using the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
-palette</a>)</p>
+    <p>reload the VSCode window (using the <a target="_blank" href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
+palette</a>, read this link for more detail on using the command palette)</p>
   </li>
 </ol>
 
 <p>After you finish these steps, VSCode will say that it’s “Installing PlatformIO
 Core”. <strong>Wait until it finishes</strong> (this might take several minutes, depending on
 your connection &amp; computer) then wait for the prompt to reload the window again.
-Be patient—if you refresh the window before it finishes it cancels the install
+Be patient—if you reload the window before it finishes it cancels the install
 process and you have to start again!</p>
 
 <h2 id="using-vscode--platformio">Using VSCode &amp; PlatformIO</h2>
 
-<p>VSCode has <a href="https://code.visualstudio.com/docs">pretty good documentation</a>, and
+<p>VSCode has <a target="_blank" href="https://code.visualstudio.com/docs">pretty good documentation</a>, and
 the lab material will link to specific parts of it where appropriate. However,
 understanding your tools is really important, so take the time to read through
 the documentation and get to know the features of VSCode. It’ll make your life
@@ -115,7 +99,9 @@ easier in the end, even if there’s a learning curve at the start.</p>
 
 <p>Once you’ve got VSCode &amp; the necessary plugins installed (and you’ve got your
 discoboard) you’re able to write and run your first program. That’s what lab 1
-is all about—so head <a href="../../labs/01-intro/index.html#connecting-the-board">to that page</a> and give it a try.</p>
+is all about—so head <a href="../lab-1/index.html">to that page</a> and give it a try.</p>
+
+<p class="info-box">Unless you would like an in-depth explaination of the VSCode and PlatformIO framework, or need to do some troubleshooting, you can stop here and head across to the first lab activity.</p>
 
 <h3 id="environ-explanation">How the software environment works</h3>
 
@@ -123,12 +109,12 @@ is all about—so head <a href="../../labs/01-intro/index.html#connecting-the-bo
 some error messages, as well as how you might resolve them.</p>
 
 <p>The COMP2300 extension depends on Cortex Debug, PlatformIO IDE and a few other extensions.
-So when COMP2300 extension is installed, those extensions will be installed as well.
+So when the COMP2300 extension is installed, those extensions will be installed as well.
 This also means that if one of those extension fails to activate at start up/window reload,
 the COMP2300 extension will also fail to activate.
 All these extensions will be installed under the <code>~/.vscode/extensions</code> directory.</p>
 
-<p>PlatformIO IDE extension is a light weight interface between VSCode and the actual PlatofrmIO Core. PIO Core (<code>platformio</code> program) does all the heavy lifting of toolchain and library management, compiling and uploading code etc.
+<p>The PlatformIO IDE extension is a light weight interface between VSCode and the actual PlatofrmIO Core. PIO Core (<code>platformio</code> program) does all the heavy lifting of toolchain and library management, compiling and uploading code etc.
 When PIO IDE extension starts, it first verifies the integrity of PIO Core installation,
 and download it if necessary (under <code>~/.platformio</code> directory).</p>
 
@@ -154,7 +140,7 @@ the Cortex Debug extension will launch <code>st-util</code> as an interface betw
 (<code>disco board &lt;--&gt; st-util &lt;--&gt; arm-none-eabi-gdb &lt;--&gt; VSCode</code>).
 <code>st-util</code> opens a port (<code>50000</code> by default) through which GDB connects and talks to it;
 and VSCode interacts with GDB through
-<a href="https://sourceware.org/gdb/onlinedocs/gdb/GDB_002fMI.html">MI commands</a>.
+<a target="_blank" href="https://sourceware.org/gdb/onlinedocs/gdb/GDB_002fMI.html">MI commands</a>.
 You can manually issue these commands through the DEBUG CONSOLE.</p>
 
 <p>You can view a bunch of different things through the <code>OUTPUT</code> panel by selecting the source
@@ -165,11 +151,8 @@ This is very helpful in troubleshooting.</p>
 
 <p>Here’s a list of issues you <em>might</em> come across, depending on the specific
 details of your machine. As always, be careful with copy-pasting random code you
-found on the internet (even in a university course!), and try to <em>understand</em>
+found on the internet and try to <em>understand</em>
 the problem first before you try the solutions listed.</p>
-
-<p>If there are new problems which come up often enough on <a href="https://piazza.com/anu.edu.au/spring2018/comp23006300/home">Piazza</a> I’ll add them
-here.</p>
 
 <p>Sometimes the board can get into a bad state causing the uploading to fail
 (especially when the debug LED becomes yellow).
@@ -219,7 +202,7 @@ If you are on Linux, it <strong>could</strong> also be a <a href="#linux-device-
 
 <h4 id="flash-failure">flash failure</h4>
 
-<p>If you got your discoboard later in the course (e.g. after week 2) then you may
+<p>You may
 have some initial problems uploading &amp; running your first program through the VSCode
 Build/Upload commands. The error message might look <em>something</em> like this,
 although there are variations.</p>
@@ -361,7 +344,7 @@ and upgrade Python to make sure it uses this updated library.</p>
 <p>In the terminal, type:</p>
 <pre><code class="language-bash">brew install openssl
 </code></pre>
-<p>You will need <a href="https://brew.sh/">Homebrew</a> if you haven’t installed it.
+<p>You will need <a target="_blank" href="https://brew.sh/">Homebrew</a> if you haven’t installed it.
 Then check the OpenSSL version in Python:</p>
 <pre><code class="language-bash">python -c "import ssl; print(ssl.OPENSSL_VERSION)"
 </code></pre>
@@ -404,7 +387,7 @@ sudo udevadm control --reload-rules
 echo "Unplug and replug your device to activate the new rules."
 </code></pre>
 
-<p>For your convenience, <a href="../../assets/scripts/permission-fix.sh">here’s a script</a> which does it all for you.</p>
+<p>For your convenience, <a target="_blank" href="../assets/scripts/permission-fix.sh">here’s a script</a> which does it all for you.</p>
 
 <p>Note: the product ID is found by doing:</p>
 
@@ -417,8 +400,8 @@ echo "Unplug and replug your device to activate the new rules."
 <p>Further reading:</p>
 
 <ul>
-  <li><a href="https://github.com/texane/stlink/issues/486">https://github.com/texane/stlink/issues/486</a></li>
-  <li><a href="https://github.com/platformio/platform-ststm32/issues/74">https://github.com/platformio/platform-ststm32/issues/74</a></li>
+  <li><a target="_blank" href="https://github.com/texane/stlink/issues/486">https://github.com/texane/stlink/issues/486</a></li>
+  <li><a target="_blank" href="https://github.com/platformio/platform-ststm32/issues/74">https://github.com/platformio/platform-ststm32/issues/74</a></li>
 </ul>
 
 <h4 id="win-driver">[Windows] ST-Link Driver</h4>
@@ -428,7 +411,7 @@ connect to the discoboard. If you don’t, you’ll get an error like this:</p>
 <pre><code>WARN src\usb.c: Couldn't find any ST-Link/V2 devices *** [upload] Error -1
 </code></pre>
 
-<p>You can get the ST-Link driver <a href="../../assets/resources/en.stsw-link009.zip">here</a>. Just unzip it and follow the
+<p>You can get the ST-Link driver <a target="_blank" href="../assets/drivers/en.stsw-link009.zip">here</a>. Just unzip it and follow the
 instruction in <code>readme.txt</code>.</p>
 
 <h4 id="windows-package-manager-problems">[Windows] package manager problems</h4>
@@ -448,7 +431,7 @@ Error: Could not install 'tool-stm32duino' with version requirements '~1.0.0' fo
 Please try this solution -&gt; http://bit.ly/faq-package-manager
 </code></pre>
 
-<p>You should probably <a href="http://docs.platformio.org/en/latest/ide/vscode.html#packagemanager-is-unable-to-install-tool">try the linked
+<p>You should probably <a target="_blank" href="http://docs.platformio.org/en/latest/ide/vscode.html#packagemanager-is-unable-to-install-tool">try the linked
 solution</a>.</p>
 
 <p>Basically, run the following in system terminal (Start Menu -&gt; <code>cmd</code>):</p>
@@ -470,7 +453,7 @@ There is no fix at the moment.</p>
 <h4 id="windows-disappearing-st-utilexe">[Windows] Disappearing st-util.exe</h4>
 <p>We have encountered some issue where the <code>st-util.exe</code> file is being removed. It
 <em>looks</em> like this is some strange interaction with
-<a href="https://en.wikipedia.org/wiki/Avast_Antivirus">Avast</a> but it’s hard to tell for
+<a target="_blank" href="https://en.wikipedia.org/wiki/Avast_Antivirus">Avast</a> but it’s hard to tell for
 sure. If you’re on Windows and you have errors mentioning <code>st-util.exe</code>, it is
 probably a good idea to check that the file is still there:</p>
 
@@ -508,7 +491,7 @@ changing to a different provider.</p>
       <p>The <em>ecosystem</em> thing means that PlatformIO isn’t just for writing a
 specific program on a specific board with a specific “framework”. You can
 read more about it in the
-<a href="http://docs.platformio.org/en/latest/ide/vscode.html#ide-vscode">documentaion</a>
+<a target="_blank" href="http://docs.platformio.org/en/latest/ide/vscode.html#ide-vscode">documentaion</a>
 if you’re interested. <a href="#fnref:ecosystem" class="reversefootnote">&#8617;</a></p>
     </li>
   </ol>
@@ -520,7 +503,7 @@ if you’re interested. <a href="#fnref:ecosystem" class="reversefootnote">&#86
 
 <footer>
 
-  <p>This material was written and prepared by Dr. Ben Swift for <a href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
+  <p>This material was written and prepared by Dr. Ben Swift for <a target="_blank" href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
 
   </footer>
 

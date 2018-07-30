@@ -1,0 +1,60 @@
+html {
+	background-color: #333;
+}
+
+body {
+	background-color: #333;
+	color: #c1c1c1;
+}
+
+#body-wrap, #body {
+	background-color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: white;
+}
+
+header {
+	background-color: black;
+	padding-bottom: 1px;
+}
+
+header h1 a {
+	color: white !important;
+}
+
+
+.info-box, .think-box, .talk-box, .push-box, .extension-box {
+	color: black;
+}
+
+.info-box a, .think-box a, .talk-box a, .push-box a, .extension-box a {
+	color: #00549E;
+}
+
+a {
+	color: #86b6e0;
+}
+
+a:hover {
+	color: #5e809e;
+}
+
+h1>code, h2>code, h3>code, h4>code, h5>code, h6>code, code>code, p>code, li>code, a>code {
+	background-color: #282c34;
+	color: #abb2bf;
+}
+
+pre code {
+	background-color: #282c34;
+	color: #abb2bf;
+}
+
+.hljs {
+	font-size: 0.8em !important;
+}
+
+footer {
+	border-top: 1px solid #abb2bf;
+}

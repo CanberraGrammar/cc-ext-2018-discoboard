@@ -5,11 +5,12 @@
   <link href="../assets/css/www.min.css" rel="stylesheet" type="text/css" media="screen" />
   <link href="../assets/css/main.css" rel="stylesheet" type="text/css" />
   <link href="../assets/css/code-cadets-custom.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/code-cadets-custom-dark.css" rel="stylesheet" type="text/css" />
 
 
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
-  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-light-499d377ed666d625078a9842a96e636c4985e27ed4c550836ba564ab5f09d05e.css">
+  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-dark.css">
   <script type="text/javascript" src="../assets/js/highlight/highlight.pack-af76728dfe3d98887947abb9090adcb18dd6d1ad0f092d60360179561eee1e19.js"></script>
 
   <script>hljs.initHighlightingOnLoad();</script>
@@ -22,7 +23,7 @@
 
   <header>
 
-    <h1>Code Cadets Extension 2018</h1>
+    <h1><a href="../index.html">Code Cadets Extension 2018</a></h1>
 
   </header>
 
@@ -57,20 +58,6 @@
 
 <h2 id="introduction">Introduction</h2>
 
-<p>Welcome to the COMP2300 labs. These labs are the heart of the course, and
-they’re your opportunity to practice the core concepts you’ll need for the
-assignments. They are also your chance to explore and ask questions. If you
-don’t understand all of what’s going on in this lab, that’s ok—for two
-reasons:</p>
-
-<ol>
-  <li>this is just the first lab (and it’s in week 1, not week 2 which is the case
-for some other courses), so we’ll cover all this stuff in detail in both
-lectures and future labs</li>
-  <li>there are <strong>no dumb questions</strong> in this course, so the lab sessions are the
-time to speak up</li>
-</ol>
-
 <p>The labs for this course have a few different recurring parts, and they will be
 presented using different coloured boxes:</p>
 
@@ -78,23 +65,22 @@ presented using different coloured boxes:</p>
 
 <p class="think-box">Sometimes you need to <strong>think</strong> about stuff before you go ahead. If you see
 something in a pink box (because your brain is
-pink—<a href="http://brainathlete.com/color-brain/">sortof</a>), that’s your clue to
+pink—<a target="_blank" href="http://brainathlete.com/color-brain/">sortof</a>), that’s your clue to
 pause and <em>think</em>—how do you expect the next part will work? Take a moment to
 think before you blaze away and start coding, because then you can check whether
 you really understand what’s going on or whether you’re just copy-pasting stuff
 without really understanding it. If you <em>don’t</em> understand it perfectly, that’s
 ok—ask your lab neighbour (or your tutor) to help you understand.</p>
 
-<p class="talk-box">One of the great things about uni is that you don’t learn in isolation. The lab
-sessions will have plenty of chances to <strong>discuss</strong> things with other in your
-lab group. If you see a green box, read it and then discuss the question with
+<p class="talk-box">We don't want you to learn in isolation. The lab
+sessions will have plenty of chances to <strong>discuss</strong> things with others. If you see a green box, read it and then discuss the question with
 your lab neighbour (someone sitting near you). In this course, as in most (all?)
 others, your fellow students are your best resource. If you have a problem with
 your work, or if there’s something you don’t understand, the first thing you
 should do (after thinking about it for at least ten seconds) should be to ask
 another student. They might not know the answer straight away, but even if they
 don’t, you might find that between the two of you you can work it out. If you
-can’t, then of course you can ask your tutor—but your tutor might not be able
+can’t, then of course you can ask the teachers—but your teacher might not be able
 to help you immediately. This also means that if you’re helping one of your
 fellow students understand something, put yourself in their shoes. It takes
 courage to ask a question, especially if you feel like everyone else in the lab
@@ -102,23 +88,11 @@ knows what’s going on (although that certainly isn’t true). Be gentle and
 helpful in your answers, and remember that you can be honest about stuff that
 you don’t know—you’re all on this journey together.</p>
 
-<p class="push-box">All assignment &amp; lab submissions in this course happen through
-<a href="https://gitlab.cecs.anu.edu.au/comp2300/2018">GitLab</a>. None of your lab work contributes to your final
-grade, however you are expected to push your lab work up to the server at
-various stages during your lab so that the tutors can see your progress and give
-you feedback. When it’s time to <strong>push</strong> something, it’ll be clearly marked in
-an orange-coloured box. Don’t just read past this box to the next section, where
-the “answer” might be discussed—make sure you attempt to complete the exercise
-yourself.</p>
-
-<p class="extension-box">Computer organisation and program execution (hey, that’s the name of this
-course!) are <em>huge</em> topics, and mastering them takes a lifetime. So the material
+<p class="extension-box">Computer organisation and program execution are <em>huge</em> topics, and mastering them takes a lifetime. So the material
 in these lab sessions will only cover the fundamentals. However, sometimes there
 are interesting <strong>extension</strong> exercises you might try if you want to go deeper,
 and these will be in a purple box. If you don’t know how to approach the
-problems in the purple boxes, that’s ok too—you’ll do just fine in the course
-if you can do all the rest of the stuff in the labs. Still, it’s a chance to ask
-your lab mates and tutors and stretch yourself if you have time.</p>
+problems in the purple boxes, that’s ok too.</p>
 
 <p>These coloured boxes will be used consistently through the lab material, so take
 a moment to familiarise yourself with what the different colours <em>mean</em>, or at
@@ -126,19 +100,13 @@ least remember that you can come back here and check at any time.</p>
 
 <h2 id="exercise-0-setting-up-the-comp2300-software-environment">Exercise 0: setting up the COMP2300 software environment</h2>
 
-<p>Setting things up deserves <a href="../../resources/software-setup/index.html">it’s own page</a>. Go have a look, see you back here when
+<p>Setting things up deserves <a target="_blank" href="../../resources/software-setup/index.html">it’s own page</a>. Go have a look, see you back here when
 you’re done :)</p>
 
 <h2 id="getting-your-discoboard">Exercise 1: getting your discoboard</h2>
 
-<p>During this lab, the tutors will come around and give you a discoboard and USB
-cable of your very own—this is <strong>yours to keep forever</strong>. How exciting! The
-only caveat is that if you unenroll from the course <strong>before</strong> the census date
-(March 31) you have to give it back.</p>
-
-<p>Handing all the boards out might take a bit of time, though, so thanks for your
-patience. When you get your board, the tutor will also take note of the serial
-number (down the bottom on the “back” side of the board).</p>
+<p>During this session we will give you a discoboard and USB
+cable of your very own—this is <strong>yours to keep forever</strong>. How exciting!</p>
 
 <p><img src="board-upside-down-a2b7497e29c13f3a77a59f38de0ae449a1bf4bf50280763673d2ff98b35998cd.jpg" /></p>
 
@@ -146,13 +114,12 @@ number (down the bottom on the “back” side of the board).</p>
 
 <p><img src="boxed-discoboard-489acb2f6c2ca0ee4849d369735a0a51445ea4fc3034e86b6336d68518931217.jpg" /></p>
 
-<p>The discoboard connects to the lab computer (or your personal laptop) via
-a <a href="https://en.wikipedia.org/wiki/USB#Mini_and_micro_connectors">mini-USB</a> cable.</p>
+<p>The discoboard connects to your computer via
+a <a target="_blank" href="https://en.wikipedia.org/wiki/USB#Mini_and_micro_connectors">mini-USB</a> cable. We also have USB-C to USB-A adapters if you have a new MacBook with USB-C ports.</p>
 
 <p>As far as electronics go, this board isn’t <em>super</em> fragile, but you’ll still
 need to be careful with it when you’re handling it and carting it around. That’s
-why you got it in a plastic container—keep it and your cable together in
-there. If you’re not used to handling electronics, here are a few tips:</p>
+why you got it in a plastic container with an antistatic bag—keep the discoboard in it's antistatic bag and put that, and your cable, in the plastic container. If you’re not used to handling electronics, here are a few tips:</p>
 
 <p><img src="holding-discoboard-66b34363f596044753433f088c8c6af4e5dad46d7392670593c4a21ff3dbbedc.jpg" /></p>
 
@@ -167,14 +134,14 @@ though there’s a different USB connector on the other end) so if it’s not
 going in, try the other end—don’t try to force it!</li>
 </ul>
 
-<p>Once you’ve received your new discoboard, plug it in to the lab computer—the
-full-size USB end goes into the lab computer, and the mini end of the USB cable
+<p>Once you’ve received your new discoboard, plug it in to your computer—the
+full-size USB end goes into the computer, and the mini end of the USB cable
 goes into the connector on the discoboard (up the “top” end, closer to the LCD
 screen).</p>
 
 <h2 id="exercise-3-your-first-discoboard-program">Exercise 3: your first discoboard program</h2>
 
-<p class="talk-box">With your lab neighbour, open up the main <a href="https://code.visualstudio.com/docs/editor/extension-gallery">VSCode documentation
+<p class="talk-box">With your lab neighbour, open up the main <a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery">VSCode documentation
 website</a>. Discuss
 with them: what makes a good documentation website?</p>
 
@@ -184,32 +151,21 @@ down into stages: clone, edit, build &amp; run.</p>
 
 <h3 id="fork--clone">Fork &amp; clone</h3>
 
-<p>In this course, you’ll be using git a lot, and you’ll have a lot of git
-repositories (<em>repos</em> for short). Don’t fear: <a href="../../resources/faq/index.html#am-i-expected-to-know-how-to-use-git">you’ve done this
-before</a> (in COMP1100, one of the pre-requisites
-for this course) and it’s the same process here. Since we’re at the start of the
-course, here’s a tip: it’s probably a good idea to make a <code>comp2300</code> (or
-<code>comp6300</code>) directory somewhere on your computer where you can keep <em>all</em> of
-your stuff for this course.</p>
+<p>In this course all the lab templates are stored in Git - with each lab having its own repo. If you have never used Git before don't fear - it is built into macOS and we will give you a quick tutorial (or you can ask some of the senior students who have used Git previously). We recommend that you have a "discoboard" folder somewhere on your computer where you can keep <em>all</em> of
+your stuff related to these activities.</p>
 
 <p>Ok, now here goes:</p>
 
 <ol>
-  <li>fork the <a href="https://gitlab.cecs.anu.edu.au/comp2300/2018/comp2300-2018-lab-1">lab 1 template</a> to your user account (i.e. <code>uXXXXXXX</code>)</li>
-  <li>clone it to your local machine</li>
+  <li>clone the <a target="_blank" href="https://github.com/CanberraGrammar/cc-ext-2018-discoboard-lab-1">lab 1 template</a> to your local machine</li>
 </ol>
 
 <p>You can do the “git clone” step in the terminal, or your favourite git client,
 it doesn’t matter. If you like, you can use VSCode’s built-in git support:
-here’s a link to the <a href="https://code.visualstudio.com/docs/editor/versioncontrol#_cloning-a-repository">general docs on this
+here’s a link to the <a target="_blank" href="https://code.visualstudio.com/docs/editor/versioncontrol#_cloning-a-repository">general docs on this
 view</a>,
-and here’s the <a href="https://code.visualstudio.com/docs/editor/versioncontrol#_cloning-a-repository">specific instructions on how to clone a
+and here’s the <a target="_blank" href="https://code.visualstudio.com/docs/editor/versioncontrol#_cloning-a-repository">specific instructions on how to clone a
 repo</a>.</p>
-
-<p class="info-box">Remember, this is all stuff you learned in COMP1100. We’ll make sure we help you
-out if you’re a bit rusty, but make sure you can fork, clone and (at the end)
-push to GitLab—<a href="../../resources/faq/index.html#can-i-submit-my-assignments-some-other-way">you won’t be able to submit the assessment items any other
-way</a>.</p>
 
 <p>After you’ve cloned, open the top-level folder in VSCode. If you used the
 integrated VSCode git clone command, this will happen automatically. If you
@@ -219,7 +175,7 @@ something like this:</p>
 
 <p><img src="vscode-open-workspace-66c1ae3b566ae7721678179b781c60875c725b9826c1afdda2094651869179f1.png" /></p>
 
-<p>Again, the VSCode docs have a <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">good explanation of the user
+<p>Again, the VSCode docs have a <a target="_blank" href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">good explanation of the user
 interface</a>.</p>
 
 <p>Now, in the <strong>Explorer</strong> view, open the <code>src/main.S</code> file, you should see
@@ -227,7 +183,7 @@ something like this:</p>
 
 <p><img alt="" the="" main.s="" file="" in="" vscode="" src="vscode-main-S-17f66ddbff7cdd8b657a217b7346c4ffa466f46a8cacc04006c8feb9a2db31b0.png" /></p>
 
-<p class="think-box">Even if you’ve never seen any assembly language before, what do you think this
+<p class="think-box">Based on your experience using rPeANUt, what do you think this
 program does?</p>
 
 <h3 id="edit">Edit</h3>
@@ -249,15 +205,15 @@ loop:
 <p>Save the file when you’re done. Don’t worry if you don’t understand all the
 details at this stage—the goal for this week’s lab is just to plug things in,
 turn them on, and make sure that everything’s working. If you have any problems,
-let your tutor know now.</p>
+let your teacher know now.</p>
 
 <h3 id="build">Build</h3>
 
 <p>You can build (or compile—they mean the same thing in this context) your
-program using the <strong>Build</strong> command (<code>PlatformIO: Build</code> in the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
+program using the <strong>Build</strong> command (<code>PlatformIO: Build</code> in the <a target="_blank" href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
 palette</a>).
 You’ll see some stuff printed to the
-<a href="https://code.visualstudio.com/docs/editor/integrated-terminal">terminal</a> (near
+<a target="_blank" href="https://code.visualstudio.com/docs/editor/integrated-terminal">terminal</a> (near
 the bottom of your VSCode window), and when it’s done it should look <em>something</em>
 like this:</p>
 
@@ -265,16 +221,11 @@ like this:</p>
 
 <p>If you’re running this process for the first time, PlatformIO will need to
 download some more stuff—again, this might take several minutes (perhaps up to
-half an hour if you’re in a lab session and everyone’s hitting the servers at
+half an hour if everyone’s hitting the servers at
 once) Be patient, you only have to do this once on any given computer, the next
 time it’ll be super-quick.</p>
 
-<p class="talk-box">While you’re waiting, push your chair away from the desk, turn, and say hello to
-the person next to you. Introduce yourself. Find out what degree they’re taking,
-and why they’re taking this course—is it a prerequisite or an elective? If
-you’re feeling extra-personable, ask what they like to do in their spare time.
-(If they’re already your friend, find someone else who you don’t know and talk
-to them instead.)</p>
+<p class="talk-box">While you’re waiting, how about you do a bit of research about how to use Git - particuarly if you have never used it before.</p>
 
 <h3 id="upload">Upload</h3>
 
@@ -286,8 +237,9 @@ afterward it should look something like this:</p>
 <p><img src="vscode-after-upload-command-3481cb029f9c29c24b4ce8c3cd6474b342960014a27e23277066a2e297c330dd.png" /></p>
 
 <p>If you get errors at this point, then they’ll be printed (probably in red) in
-the terminal. Try and figure out what’s going wrong yourself, but don’t hesitate
-to ask your lab neighbour or your tutor if you get stuck.</p>
+the terminal. Try and figure out what’s going wrong yourself.</p>
+
+<p class="info-box">The most common error you might encounter at this stage is a flash failure error: <code>Error: init mode failed (unable to connect to target)</code>. This is likely to be the "first upload" problem. Head across to the <a target="_blank" href="../software-setup/index.html#flash-failure">flash failure</a> troubleshooting section of the software setup to look at how to fix this issue.</p>
 
 <h3 id="run">Run</h3>
 
@@ -297,7 +249,7 @@ writing programs for the discoboard. You may have used a debugger like this
 before, or you may not have—that’s ok! We’ll lead you through the basics in
 the labs over the next couple of weeks.</p>
 
-<p>Open up the <a href="https://code.visualstudio.com/docs/editor/debugging"><strong>Debug</strong>
+<p>Open up the <a target="_blank" href="https://code.visualstudio.com/docs/editor/debugging"><strong>Debug</strong>
 view</a> and make sure the
 <em>ARM On-Chip Debug</em> configuration is selected in the drop-down menu (if you
 select a different config, e.g. the PlatformIO config, then it won’t work):</p>
@@ -310,7 +262,7 @@ select a different config, e.g. the PlatformIO config, then it won’t work):</p
 
 <p>The highlighted yellow line of assembly code (shown in the above screenshot)
 represents where the program is “up” to. When you first start it running, the
-IDE creates a <a href="https://en.wikipedia.org/wiki/Breakpoint"><strong>breakpoint</strong></a> at the
+IDE creates a <a target="_blank" href="https://en.wikipedia.org/wiki/Breakpoint"><strong>breakpoint</strong></a> at the
 <code>main:</code> label in your program, so when your program reaches that line of code it
 stops and waits for further instructions (from you!).</p>
 
@@ -319,7 +271,7 @@ debug controls:</p>
 
 <p><img src="vscode-debugger-arrows-8fba966a7f3a9dd72615abbdd7d41b2359335a8cbcccbddbd218e291e12b0dbf.png" /></p>
 
-<p class="talk-box">Discuss with your lab neighbour—what do all these debug control buttons do?
+<p class="talk-box">Discuss with your neighbour—what do all these debug control buttons do?
 Play around with them together—can you see what effect they’re having on the
 program executing on your discoboard? Are you <em>pumped</em>?</p>
 
@@ -352,40 +304,9 @@ the code view in the IDE. You should see a little red dot appear:</p>
 
 <p><img src="vscode-breakpoint-5bd2e6cee66fdcdccf65b34c9663a096c5b646eb3838aff566489c077c04d4f2.png" /></p>
 
-<p class="think-box">The program isn’t running on the lab computer on the desktop—it’s running on
+<p class="think-box">The program isn’t running on your laptop—it’s running on
 your discoboard. What does that <em>mean</em>? What are the implications for the way
 you run &amp; debug your program?</p>
-
-<h2 id="submit-your-program">Exercise 4: sign the pledge, submit your work</h2>
-
-<p>Today’s lab submission isn’t an assembly program, it’s a pledge of integrity.
-This is a short yaml document (what’s <a href="../../resources/faq/index.html#yaml">yaml</a>?) stating that you understand and <strong>are committed
-to</strong> conducting yourself with integrity in this course.</p>
-
-<p>Find the <code>pledge-of-integrity.yml</code> file in the top-level of your workspace
-folder. Read it, understand it, “sign” it by adding your uni ID &amp; name in the
-appropriate places.</p>
-
-<p>Why is this necessary? Well, marking assignments &amp; labs &amp; providing good
-feedback is really time consuming. We (Ben &amp; the tutors) are absolutely
-committed to doing it in this course, because we’re here to help you learn.
-However, it wastes your time &amp; ours (and <a href="../../resources/faq/index.html#academic-misconduct">much worse</a>) if we have to deal with academic
-misconduct issues. By “signing” &amp; committing this pledge, you’re promising that
-you won’t engage in that conduct. So you won’t receive any marks or feedback in
-this course until you’ve done it.</p>
-
-<p>As mentioned at the top of this lab content, in this course you will submit
-stuff (including work-in-progress versions) during your weekly lab session. This
-is a chance for you to keep track of your progress, and also (sometimes) for the
-tutors to give you feedback about how you’re going. This is all a good
-thing—if you’ve got questions you want to get help <em>now</em>, not after you’ve
-bombed on the mid-semester exam.</p>
-
-<p>The submission process is also the same as the one you’ll use to submit your
-assignments in this course.</p>
-
-<p class="push-box">Commit your (updated) versions of <code>main.S</code> &amp; <code>pledge-of-integrity.yml</code> to your
-repo and push them up to your fork on the GitLab server.</p>
 
 <h2 id="summary">Summary</h2>
 
@@ -395,24 +316,22 @@ repo and push them up to your fork on the GitLab server.</p>
   <li>plugged in your board</li>
   <li>opened up the IDE</li>
   <li>built, uploaded, run &amp; debug a basic program on your board</li>
-  <li>pledged to be a person of integrity in this course</li>
 </ol>
 
 <p>Next week, you’ll start thinking about what the assembly code you wrote does,
 and what it actually <em>looks like</em> in the memory of your discoboard.</p>
 
-<p class="info-box">Make sure you logout to terminate your session, and pack up your board and USB
+<p class="info-box">Make sure you pack up your board and USB
 cable carefully.</p>
 
 <p class="extension-box">There’s no specific extension content this week. Having said that, the board is
-now yours, so you can program it however you like—especially since you can
-<a href="../../resources/software-setup/index.html">install the IDE on your own laptop/desktop</a>.</p>
+now yours, so you can program it however you like.</p>
 
       </div>
 
 <footer>
 
-  <p>This material was written and prepared by Dr. Ben Swift for <a href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
+  <p>This material was written and prepared by Dr. Ben Swift for <a target="_blank" href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
 
   </footer>
 
