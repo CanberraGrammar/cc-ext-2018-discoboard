@@ -23,7 +23,7 @@
 
   <header>
 
-    <h1>Code Cadets Extension 2018</h1>
+    <h1><a href="../index.html">Code Cadets Extension 2018</a></h1>
 
   </header>
 
@@ -46,40 +46,21 @@
   
       <div class="doublewide nomargintop" style="float:none; display:block">
         
-<div class="info-box" style="margin-bottom: 20px;">
-  <p>In response to the software issues in week 1, we’ve updated the COMP2300 VSCode
-extension (now at version <code>0.3.5</code>) <em>and</em> the
-PlatformIO config (in the <code>platformio.ini</code> file). Check that you’ve got this version installed (in the
-Extensions viewlet).</p>
-
-  <p>This means you’ll need to download &amp; wait for the new PlatformIO things to
-install, and this might take a <strong>long</strong> time—up to an hour on the lab
-machines, but probably quicker on your own machine. Again, sorry about this, and
-thanks for your patience—hopefully it’ll be the last time.</p>
-
-  <p>As soon as you get into your lab (or even before!) you should clone the <a href="https://gitlab.cecs.anu.edu.au/comp2300/2018/comp2300-2018-lab-2">lab 2
-template</a> in VSCode to start the download &amp; unpack
-process on your machine. While you’re waiting, jump into small groups with a
-labmate who <em>does</em> have it working on their computer and work with them until
-your machine finishes loading.</p>
-</div>
-
 <h2 id="outline">Outline</h2>
 
-<p>Before you attend this week’s lab, make sure:</p>
+<p>Before you complete this lab, make sure:</p>
 
 <ol>
-  <li>you can fork, commit &amp; push your work to GitLab</li>
+  <li>you can clone repos from git</li>
   <li>you can use VSCode to edit assembly (<code>.S</code>) files</li>
   <li>you can connect your discoboard to your computer and start a debugging
 session.</li>
-  <li>you have read the lab content below</li>
 </ol>
 
 <p>If you’re not confident about that stuff then feel free to have a look over the
-<a href="../01-intro/index.html">week 1 lab</a> again.</p>
+<a target="_blank" href="../lab-1/index.html">Lab 1</a> again.</p>
 
-<p>In this week’s lab you will:</p>
+<p>In this lab you will:</p>
 
 <ol>
   <li>write your own first pieces of machine code</li>
@@ -92,17 +73,11 @@ executed on your discoboard</li>
 when you’ll need each one):</p>
 
 <ul>
-  <li><a href="../../assets/manuals/ARMv7-cheat-sheet.pdf">ARM assembly cheat sheet</a></li>
-  <li><a href="../../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference Manual</a></li>
+  <li><a target="_blank" href="../assets/manuals/ARMv7-cheat-sheet.pdf">ARM assembly cheat sheet</a></li>
+  <li><a target="_blank" href="../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference Manual</a></li>
 </ul>
 
 <h2 id="introduction">Introduction</h2>
-
-<p>In the week 1 lectures you saw how your CPU/MCU is built out of logic gates
-which are built into different components, including registers for storing
-memory and adders (as part of the
-<a href="https://en.wikipedia.org/wiki/Arithmetic_logic_unit">ALU</a>) for adding numbers
-together.</p>
 
 <p>Today you will see how to explain to your CPU that your plan is to calculate
 <code>2+2</code>, and see how <strong>words</strong> (i.e. numbers) in memory can be formed and
@@ -110,7 +85,7 @@ interpreted as <strong>opcodes</strong> (operation codes) which will instruct yo
 things (e.g. add two values).</p>
 
 <p>Even though this is a “first steps” type of lab, the things you’ll do in this
-lab are essential for this course, so make sure you understand <em>everything</em> in
+lab are essential for the rest of this course, so make sure you understand <em>everything</em> in
 your program what is happening in front of you. Anything you leave hanging here
 will probably haunt you in the coming weeks. Don’t feel like everyone else is
 getting it and you’re the only one that’s lost—that’s <em>definitely</em> not the
@@ -118,8 +93,8 @@ case.</p>
 
 <h2 id="two-plus-two">Exercise 1: 2+2</h2>
 
-<p>Fork &amp; clone the <a href="https://gitlab.cecs.anu.edu.au/comp2300/2018/comp2300-2018-lab-2">lab 2 template</a> to your machine (just
-like you did <a href="../01-intro/index.html">last week</a>).</p>
+<p>Fork &amp; clone the <a href="https://github.com/CanberraGrammar/cc-ext-2018-discoboard-lab-2">lab 2 template</a> to your machine (just
+like you did <a target="_blank" href="../lab-1/index.html">in Lab 1</a>).</p>
 
 <p>Your job in this first exercise is to write an assembly program which calculates
 <code>2+2</code> and leaves the result in register 1 (<code>r1</code>).</p>
@@ -136,7 +111,7 @@ the desired format. This will help you make sense of the value of a register.</p
 
 <h3 id="arm-assembly-syntax">ARM assembly syntax</h3>
 <p>This is probably the first time you’ve written any ARM assembly code, so for
-this course we’ve prepared a <a href="../../assets/manuals/ARMv7-cheat-sheet.pdf">cheat
+this course we’ve prepared a <a target="_blank" href="../assets/manuals/ARMv7-cheat-sheet.pdf">cheat
 sheet</a> to help you out.
 It looks pretty intimidating at first—mostly because it crams a lot of
 information into a small space. So let’s pick one line of the cheat sheet—the
@@ -151,8 +126,7 @@ information into a small space. So let’s pick one line of the cheat sheet—th
 (comma-separated) argument list. Just like any other programming language, once
 you understand the syntax you can read and understand the code. In fact, since
 it’s a smaller language (there are only a couple of dozen instructions) it’s
-probably easier to read than languages with a richer syntax (I’m looking at
-<em>you</em>, Haskell).</p>
+probably easier to read than languages with a richer syntax.</p>
 
 <ul>
   <li>
@@ -214,7 +188,7 @@ rather than English—it’s much less wordy.</p>
 
 <p>The <strong>flags</strong> column of the cheat sheet specifies which of the special condition
 code flags that instruction sets if the optional <code>s</code> suffix is present. (We’ll
-cover this in next week’s lab, but if you’re curious there’s a box on the second
+cover this in Lab 3, but if you’re curious there’s a box on the second
 page of the cheat sheet which lists the flags.)</p>
 
 <p class="info-box">Whew, that was a bit of an information dump. But it was worth picking it apart in
@@ -238,10 +212,6 @@ instructions which will implement an addition—which one do you want, and
 through and make sure that the value which <code>r1</code> holds at the end is actually
 <code>4</code>.</p>
 
-<p class="push-box">Make a commit now that you have finished Exercise 1. It’s a good idea to keep a
-version once you have completed each exercise in the lab; that’s what version
-control system is for, right?</p>
-
 <h2 id="reverse-engineering">Exercise 2: reverse engineering</h2>
 
 <p>Now we really look under the hood and leave no bit unturned. Start a debugging
@@ -253,7 +223,7 @@ it’s actually running on your discoboard?</p>
 
 <p>To do that we need to be able to view the memory in the disco board. In VSCode
 you can look at your memory directly using the <strong>Memory View</strong>: type
-<code>Cortex-Debug: View Memory</code> in the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
+<code>Cortex-Debug: View Memory</code> in the <a target="_blank" href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette">command
 palette</a>
 (or some part of it—the command palette “fuzzy matches” on command names).
 VSCode will then ask you to input the <strong>starting address</strong> and the <strong>number of
@@ -281,7 +251,7 @@ things—try and put some <em>known</em> values into the program so that we know
 we’re looking for when we’re staring at the memory view.</p>
 
 <p>There’s an assembler directive called
-<a href="https://sourceware.org/binutils/docs/as/hword.html#hword"><code>.hword</code></a> which you
+<a target="_blank" href="https://sourceware.org/binutils/docs/as/hword.html#hword"><code>.hword</code></a> which you
 can use to put 16-bit numbers into your program (“hword” is short for half-word,
 and comes from the fact that your discoboard’s CPU uses 32-bit “words”).</p>
 
@@ -343,9 +313,9 @@ might be painful and confusing at the start, but you’ll get used to it.</p>
 
 <p class="extension-box">How might you figure out on your discoboard’s Cortex-M4 CPU whether a 32-bit
 instruction is read as one 32-bit word or as two 16-bit half-words? (hint:
-have a look at A5.1 in the <a href="../../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference Manual</a>).</p>
+have a look at A5.1 in the <a href="../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference Manual</a>).</p>
 
-<p class="info-box">According to <a href="https://en.wikipedia.org/wiki/Endianness#Etymology">Wikipedia</a>,
+<p class="info-box">According to <a target="_blank" href="https://en.wikipedia.org/wiki/Endianness#Etymology">Wikipedia</a>,
 Danny Cohen introduced the terms <em>Little-Endian</em> and <em>Big-Endian</em> for byte
 ordering in an article from 1980. In this technical and political examination of
 byte ordering issues, the “endian” names were drawn from Jonathan
@@ -388,7 +358,7 @@ the instruction encoding <em>mean</em>? How does the discoboard know what to do 
 them? And if you’ve figured that out, why doesn’t your program actually <em>work</em>?</p>
 
 <p>To fully make sense of these instruction encodings you need more than just your
-cheat sheet, you need the <a href="../../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference
+cheat sheet, you need the <a target="_blank" href="../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference
 Manual</a>).
 You need to dig to the deepest levels, by going to <strong>section A7.7</strong>
 <em>Alphabetical list of ARMv7-M Thumb instructions</em> (page A7-184). Use the
@@ -501,10 +471,6 @@ CPU understands. You may also find this number format conversion tool helpful:</
   </tbody>
 </table>
 
-<p class="push-box">Commit your “reverse engineering” program with a comment about what the
-instruction looks like in memory. It doesn’t matter that it doesn’t actually run
-at this point—you’ll get there in the next exercise.</p>
-
 <p class="extension-box">Can you tell which specific encoding has been used? Note that not every encoding
 can express every version of the instruction, but sometimes a more complex
 encoding can also express what the a simpler form could have done as well. Can
@@ -558,7 +524,7 @@ type the function name (e.g. <code>main</code>). It will look something like thi
 it will be understood by the CPU. You can even do step debugging in disassembly
 view; it’s automatic based on which source tab you have active<sup id="fnref:flaky"><a href="#fn:flaky" class="footnote">2</a></sup>.</p>
 
-<p class="think-box">Looking ad the disassembled code (i.e. the way the CPU will interpret the
+<p class="think-box">Looking at the disassembled code (i.e. the way the CPU will interpret the
 instructions) did you see what you intended? Will your new, hand-assembled
 program show the correct result in <code>r1</code> after it has been run? If it doesn’t,
 what might have gone wrong?</p>
@@ -577,8 +543,6 @@ bingo!</p>
 
 <p class="talk-box">Discuss with your lab neighbour: after completing this exercise, how would you
 explain the way a CPU works to your grandma/grandpa?</p>
-
-<p class="push-box">Make a commit now that you’ve knocked down Exercise 3. Congrats!</p>
 
 <h2 id="exercise-4-bit-vectors">Exercise 4: bit vectors</h2>
 
@@ -653,13 +617,12 @@ to your neighbour or tutor to get ideas about how it could be done differently.<
 adventures. How many bits is that number? Do you think it will fit into the
 instruction encoding? Have a look at the disassembly, and cross check it with
 the instruction manual. Can you make sense of what’s happening here? (Hint:
-<a href="https://alisdair.mcdiarmid.org/arm-immediate-value-encoding/">this blog post</a>
+<a target="_blank" href="https://alisdair.mcdiarmid.org/arm-immediate-value-encoding/">this blog post</a>
 might be helpful to you). Give it a crack, but we will revisit this again later
 in the course.</p>
 
-<p class="push-box">Finalise your program so that the <code>main</code> function performs the <code>"COPE"</code> -&gt;
-<code>"HOPE"</code> -&gt; <code>"HOPS"</code> transformation and leaves the <code>"HOPS"</code> value in <code>r2</code>.
-Commit &amp; push your changes up to your fork on the GitLab server.</p>
+<p>Finalise your program so that the <code>main</code> function performs the <code>"COPE"</code> -&gt;
+<code>"HOPE"</code> -&gt; <code>"HOPS"</code> transformation and leaves the <code>"HOPS"</code> value in <code>r2</code>.</p>
 
 <h2 id="summary">Summary</h2>
 
@@ -675,11 +638,12 @@ in a word</li>
   <li>read and write numbers in different bases: decimal, binary, hex</li>
 </ol>
 
-<p>Next week, you’ll start taking this information to construct (and play!) a
+<p>Next lab, you’ll start taking this information to construct (and play!) a
 simple game.</p>
 
-<p class="info-box">Make sure you logout to terminate your session, and pack up your board and USB
-cable carefully.</p>
+<p class="info-box">Make sure you pack up your board and USB
+cable, and adapter (if needed) carefully.</p>
+
 <div class="footnotes">
   <ol>
     <li id="fn:no-relation">
