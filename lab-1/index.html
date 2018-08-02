@@ -265,6 +265,10 @@ IDE creates a <a target="_blank" href="https://en.wikipedia.org/wiki/Breakpoint"
 <code>main:</code> label in your program, so when your program reaches that line of code it
 stops and waits for further instructions (from you!).</p>
 
+<p class="info-box">When the program first starts executing it will likely breakpoint/pause in the <code>startup_stm32l476xx.S</code> file. You can just use the debugger controls to step through until you break on the <code>main:</code> label in your program.</p>
+
+<p class="talk-box">What is the purpose of the <code>startup_stm32l476xx.S</code> file? Try to figure out what it does and why it is used when your program first loads.</p>
+
 <p>At this point, you can step through the code one instruction at a time using the
 debug controls:</p>
 
