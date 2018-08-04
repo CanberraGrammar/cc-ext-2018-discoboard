@@ -277,6 +277,8 @@ view. Can you see the <code>0xdead</code> and <code>0xbeef</code> values you put
 you can’t see them <em>exactly</em>, can you see something which looks suspiciously
 like them? What do you notice?</p>
 
+<p class="talk-box">If you try to run your program (stepping/continuing past the first initial breakpoint, in the <code>startup_stm32l476xx.S</code> file) it crashes &mdash; more specifically, it throws an exception and then puts the program into an endless loop so it hangs for inspection with the debugger). Why is this happening? Why doesn't the program run anymore?</p>
+
 <h3 id="endianness">Endianness</h3>
 
 <p>To make sense of the numbers displayed in the memory view, we need to talk about
