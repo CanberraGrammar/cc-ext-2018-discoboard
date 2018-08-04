@@ -1,0 +1,531 @@
+<html>
+
+<head>
+
+  <link href="../assets/css/www.min.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="../assets/css/main.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/code-cadets-custom.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/code-cadets-custom-dark.css" rel="stylesheet" type="text/css" />
+
+
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-dark.css">
+  <script type="text/javascript" src="../assets/js/highlight/highlight.pack-af76728dfe3d98887947abb9090adcb18dd6d1ad0f092d60360179561eee1e19.js"></script>
+
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <title>Lab 2: First Machine Code</title>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1><a href="../index.html">Code Cadets Extension 2018</a></h1>
+
+  </header>
+
+    <div id="body-wrap" role="main">
+      <div id="body">
+
+        <div id="content">
+  
+  <div class="marginleft ">
+  
+  
+    
+    
+      <div> 
+        <h1 class="post-title">Lab 3: Maths to Machine Code</h1>
+    </div>
+  
+  </div>
+  
+  
+      <div class="doublewide nomargintop" style="float:none; display:block">
+        
+<h2 id="outline">Outline</h2>
+
+<p>Before you complete this week’s lab, make sure:</p>
+
+<ol>
+  <li>you understand how simple assembly instructions are executed by the
+discoboard (and can read the cheat sheet to figure out what they do)</li>
+  <li>you’re able to follow the execution of your program in the debugger, and
+inspect registers to see what’s going on</li>
+  <li>you have read the laboratory text below</li>
+</ol>
+
+<p>In this lab you will:</p>
+
+<ol>
+  <li>translate simple mathematical expressions into sequences of assembly
+instructions</li>
+  <li>watch the status register and monitor the condition flags</li>
+  <li>branch (jump) around in your program, including conditional branches</li>
+</ol>
+
+<p>Useful reference material:</p>
+
+<ul>
+  <li><a target="_blank" href="../assets/manuals/ARMv7-cheat-sheet.pdf">ARM assembly cheat sheet</a></li>
+  <li><a target="_blank" href="../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARM®v7-M Architecture Reference Manual</a></li>
+</ul>
+
+<p>And here’s the conversion widget again, because it always comes in handy:</p>
+
+<script>
+ "use strict";
+
+ // The original logarithmic left-pad that rose to fame
+ function padZeroes(input, length) {
+
+   if (input.length > length){
+     return input;
+   }
+
+   let padChar = "0";
+   return padChar.repeat(length - input.length) + input;
+ }
+
+ function formatWithGrouping(string) {
+   // currently only works if string length mod 4 == 0
+   let splitter = (coll, x, i) => {
+     return (i % 4 == string.length % 4 ? " " : "") + x + coll;
+   }
+   return string.split("").reduceRight(splitter).trim();
+ }
+
+ function twosComplement(value, bits) {
+   if (value >= 0) {
+     return value;
+   } else {
+     return Math.pow(2, bits) + value;
+   }
+ }
+
+ function fieldElement(id) {
+   return document.getElementById(id + "_val");
+ }
+
+ function recalc(kind) {
+   var new_value = fieldElement(kind).value.replace(/ /g, "");
+   if (kind === "hex") {
+     new_value = parseInt(new_value, 16);
+   } else if (kind === "bin") {
+     // need to strip the 0b prefix because js is dumb
+     new_value = parseInt(new_value.substring(2), 2);
+   } else if (kind === "dec") {
+     new_value = parseInt(new_value);
+   } else if (kind === "str") {
+   }
+
+   if (isNaN(new_value)) {
+     new_value = 0;
+   }
+
+   if (kind != "hex") {
+     fieldElement("hex").value = "0x " + formatWithGrouping(padZeroes(twosComplement(new_value, 32).toString(16), 8));
+   }
+   if (kind != "bin") {
+     fieldElement("bin").value = "0b " + formatWithGrouping(padZeroes(twosComplement(new_value, 32).toString(2), 32));
+   }
+   if (kind != "dec") {
+     fieldElement("dec").value = new_value;
+   }
+ }
+</script>
+
+<style>
+ .conversion-widget {
+   width: 100%;
+ }
+
+ .conversion-widget .basetype {
+   width: 4em;
+   font-weight: 900;
+ }
+
+ .conversion-widget td {
+   padding: auto 0;
+ }
+
+ .conversion-widget input {
+   width: 100%;
+   text-align: right;
+   box-sizing: border-box;
+   font-size: 100%;
+   font-family: 'Source Code Pro', monospace;
+ }
+</style>
+
+<table class="conversion-widget">
+  <tbody>
+    <tr>
+      <td class="basetype">Decimal</td>
+      <td><input oninput="recalc('dec')" id="dec_val" value="0" /></td>
+    </tr>
+    <tr>
+      <td class="basetype">Hex</td>
+      <td><input oninput="recalc('hex')" id="hex_val" value="0x 0000 0000" /></td>
+    </tr>
+    <tr>
+      <td class="basetype">Binary</td>
+      <td><input oninput="recalc('bin')" id="bin_val" value="0b 0000 0000 0000 0000 0000 0000 0000 0000" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="introduction">Introduction</h2>
+
+<p><a target="_blank" href="http://us.battle.net/hearthstone/en/">Hearthstone</a> is a card-game-style
+computer game where you kill monsters and win internet points, and it seems to
+be pretty popular with the kids these days. In this lab, you’re going to
+create our very own game—a (much) simplified version of Hearthstone that we’ll
+call <strong>Hearthpebble</strong>.</p>
+
+<p class="talk-box">In this lab you’ll be working in pairs, so say hi to the person sitting next to
+you—they’ll be your partner for this lab. Ask them what their favourite card
+game is, and whether they’ve ever thought of writing a computer-program version
+of it?</p>
+
+<p>Fork &amp; clone the <a target="_blank" href="https://github.com/CanberraGrammar/cc-ext-2018-discoboard-lab-3">lab 3 template</a> to your machine and
+let’s get started.</p>
+
+<h2 id="exercise-1-characters-and-health-potions">Exercise 1: characters and health potions</h2>
+
+<pre><code class="language-ARM">.syntax unified
+.global main
+
+main:
+
+@ your code goes here
+
+@ a simple infinite loop
+end_loop:
+  nop
+  b end_loop
+</code></pre>
+
+<p class="think-box">But before you write any more code, think: what are the <em>minimum</em> features that
+you’ll need to put in your program to create a game like this?</p>
+
+<p>At the very least, the game needs:</p>
+
+<ol>
+  <li>a <strong>character</strong>, with some number of hit points</li>
+  <li>an <strong>action</strong> that our character can perform</li>
+</ol>
+
+<p class="talk-box">This stuff is so common in computer games that you probably don’t even think of
+it, but discuss with your partner: using what you’ve learned so far about
+programming your discoboard, how might you keep track of your character’s hit
+points (HP), and how could you represent an action in your program?</p>
+
+<p>Given what you’ve covered so far, you probably decided to use a <strong>register</strong> to
+store the character’s HP—good choice. Remember in last week’s lab you used
+registers and instructions to perform your <code>2</code>+<code>2</code> operation? This is the same
+idea. From the computer’s perspective the register is just a bunch of bits
+(well, a bunch of logic gates which store a bunch of bits) but as long as <em>you</em>
+know that that particular register really represents your character’s HP and
+treat it accordingly, then your game will play just fine.</p>
+
+<p>With your partner, write a program to store the character’s HP in the register
+<code>r1</code> with an initial value of <code>100</code>.</p>
+
+<p>You’re also hopefully by now starting to get the hang of the way things can go
+wrong in assembly programming. For example, if you try to write an instruction
+which branches to <em>itself</em>:</p>
+
+<pre><code class="language-arm">my_label:
+  b my_label
+</code></pre>
+
+<p>then your board will stop talking to you (that’s why we put a <code>nop</code> in the
+middle). And if you set a breakpoint on a label (like <code>my_label</code> above) then
+it’ll break one instruction <em>later</em> than you’d expect (this is a gdb bug). All
+of this stuff is a bit painful at first, but you get the hang of it.</p>
+
+<p>If all else fails, un-plug and re-plug your board (but once you get used to the
+pitfalls you shouldn’t have to do that too often).</p>
+
+<h2 id="condition-codes">Exercise 2: dealing with condition codes</h2>
+
+<p>Now that you’re storing the HP, here’s the first action in the game:</p>
+
+<ul>
+  <li><strong>healing potion</strong>: add 50HP (hp := hp + 50)</li>
+</ul>
+
+<p>With your partner, write an assembly instruction for this action. Remember to
+look at the <a target="_blank" href="../assets/manuals/ARMv7-cheat-sheet.pdf">cheat
+sheet</a>—nobody expects
+you to recall this stuff perfectly from memory.</p>
+
+<p>Step through your program—what’s the value in the hit point register after
+your “action” instruction has occurred? Does that seem right?</p>
+
+<p>At this point, the Hearthpebble world only has one action, so the only way for
+the game to proceed is to keep performing that action. We can do that with a
+<strong>branch</strong> instruction: <code>b</code> (hint: check page 2 of your cheat sheet). This
+instruction tells your discoboard to “branch” (sometimes called a jump on other
+CPU types) to a different part of the code. You can specify the “destination” of
+the branch in a bunch of different ways, including using a label, or a constant
+value (if you know exactly what address you want to go to ahead of time) or even
+the address in a register. If you’ve wondered how to get your program to do
+something other than just keep following the instructions from top to bottom,
+branching is the answer.</p>
+
+<p>Add a label and a branch instruction to modify your program so that the
+character keeps drinking healing potions (one after the other) indefinitely.</p>
+
+<p>Hit the continue (play) button in the debug toolbar and let the program run for
+a while, pausing every now and again to check the players HP value—what do
+you notice?</p>
+
+<p class="talk-box">What do you think is going on here?</p>
+
+<p>How can you deal with this problem? The answer lies is in the program status
+register in every ARMv7 CPU (including our little discoboard). You can see it in
+the <em>cortex registers</em> viewlet in VSCode under <code>cpsr</code>:</p>
+
+<p><img src="cpsr-viewlet-11f97d0a70f10a6de60a3816aa8346879d4b79cbe0af194f06e607ff80c62a47.png" style="width:50%;margin:0px auto;" /></p>
+
+<p><a target="_blank" href="http://stackoverflow.com/a/24002847/1510867">This stackoverflow post</a> also has
+a nice “clock” animation to show how all the condition codes in the status
+register work.</p>
+
+<p>When the discoboard executes any instruction with an <code>s</code> suffix (e.g. <code>adds</code>) it
+updates these status flags according to the result of the operation. That’s all
+the <code>s</code> does—<code>add</code> and <code>adds</code> will leave the exact same result in the
+destination register, but <code>adds</code> will update the flags to leave some
+“breadcrumbs” about the result (which can be helpful, as you’ll soon see).</p>
+
+<p class="info-box">Sometimes the status flags are called status bits, or condition flags, or
+condition codes, or some other combination of those words. They all refer to the
+same thing—the bits in the program status register.</p>
+
+<p>It’s time to see this in action. Go back to your “healing loop” program from
+Exercise 1 and step through, but this time keep an eye on the <code>cpsr</code> register.
+As a tip, you probably want to bump up the “healing amount” to something like
+<code>0xF000000</code> so that it doesn’t take you a million steps before you overflow :)
+What do you notice about the status register bits when the HP register switches
+to a negative (when viewed as a signed decimal number) value?</p>
+
+<p>With your partner, write a series of simple programs (e.g. <code>mov</code> some values
+into registers, then do an arithmetic operation on those registers) to set (a)
+the negative flag bit (b) the zero flag bit (c) the carry flag bit and (d) the
+overflow flag bit. Your program should look like this:</p>
+
+<pre><code class="language-arm">@ set the negative flag
+
+... your instruction(s) go here ...
+
+@ set the zero flag
+
+... your instruction(s) go here ...
+
+@ set the carry flag
+
+... your instruction(s) go here ...
+
+@ set the overflow flag
+
+... your instruction(s) go here ...
+</code></pre>
+
+<p class="extension-box">The program status register <code>cpsr</code> is a bit different from the other registers,
+and you can’t use it in all instructions. You can access it with special
+instructions, though—check out <code>MRS </code> and <code>MSR</code> in the <a target="_blank" href="../assets/manuals/ARMv7-M-architecture-reference-manual.pdf">ARMv7 reference
+manual</a>.
+Can you think of a way (or an addition to your program) to make your life easier
+in reading the program status register?</p>
+
+<p>It might seem like this carry/overflow stuff isn’t worth worrying about
+because it’ll never happen in real life. But that’s not true. In 2013 the actual
+Hearthstone game was <a target="_blank" href="https://us.battle.net/forums/en/hearthstone/topic/9792930444">found to contain an integer overflow
+bug</a>. It can cause
+more serious problems too, like literally <a target="_blank" href="http://www.bbc.com/future/story/20150505-the-numbers-that-lead-to-disaster">causing rockets to
+explode</a>.
+So understanding and checking the status flags really matters :)</p>
+
+<h2 id="exercise-3-enriching-our-game-world">Exercise 3: enriching our game world</h2>
+
+<p>At the moment, Hearthpebble is pretty boring. Let’s add
+<a target="_blank" href="https://en.wikipedia.org/wiki/Magic_(gaming)">mana</a> and stamina attributes to
+the character—pick a couple of registers (<code>r2</code> and <code>r3</code> are probably good
+choices) and initialise them to some values. Pick some values which seem good to
+you, you’re the game designer now!</p>
+
+<p>Even these small additions open up some interesting new actions, for example:</p>
+
+<ul>
+  <li><strong>fireball</strong>: remove 20HP</li>
+  <li><strong>frenzy</strong>: remove 20HP, but add 40 stamina</li>
+  <li><strong>magic poison</strong>: do <em>double</em> the character’s mana attributes in damage (hp := hp - 2 * mana)</li>
+  <li><strong>strength from weariness</strong>: (hp := hp + (mana - stamina)^2)</li>
+  <li><strong>eye of Zardok</strong>: (stamina := (hp * stamina) / 100; mana := (mana / 16)^3)</li>
+</ul>
+
+<p>Write the assembly code for each of these actions.</p>
+
+<p>Note that these ones (unlike the simpler actions from the previous section)
+might require more than one instruction, so feel free to use whitespace and
+comments (any text on a line following the <code>@</code> character is a comment) to make
+things clearer. You can use whatever registers you like, but make sure that the
+<strong>destination</strong> register of each instruction isn’t already holding something
+important (like your HP!). For more complex mathematical expressions, you need
+to break it down into smaller steps. Use a pencil and paper if that helps.</p>
+
+<p>Now, create <em>at least</em> one action of your own. Give it a name, figure out what
+it does to the game state and implement it in assembly code.</p>
+
+<h2 id="exercise-4-enter-player-2">Exercise 4: enter player 2</h2>
+
+<p>You’ve now got the building blocks for Hearthpebble in place, but there’s still
+one thing clearly missing—an opponent to play against! To add a second player
+you’ll have to set 3 more registers aside to hold the second player’s health,
+mana and stamina. Be careful about which registers you use—make sure that any
+of the “action sequences” don’t accidentally clobber player 2’s stuff. You can
+make the structure of the code by adding some labels to the code, something
+like:</p>
+
+<pre><code class="language-ARM">main:
+
+player_1_init:
+@ player 1 init code
+
+player_2_init:
+@ player 2 init code
+
+player_1_actions:
+@ player 1 actions code
+
+player_2_actions:
+@ player 2 actions code
+</code></pre>
+
+<p>To make the 2-player version of the game work properly, you’ll really need to
+use the branch (<code>b</code>) instruction. Your program should initially execute the init
+instructions (first for player 1, then for player 2) and the ‘ping-pong’ between
+the player 1 and player 2 actions until one of the players is dead. If you’re
+doing lots of copy-pasting of the same (action) instructions, then you’re doing
+it wrong!</p>
+
+<p class="talk-box">Pair up with your partner and decide on some “house rules”, e.g. no actions
+which are <em>too</em> powerful. Remember, it’s not about winning, but about
+<em>understanding</em> what’s going on.</p>
+
+<p>Once you’ve agreed on how your 2-player game will work, create your 2-player
+game by filling out the above “code skeleton” with your partner.</p>
+
+<p>Together you can play (run) the program as many times as you like, watching the
+all-important HP registers to see how the game evolves. When you’ve figured out
+what the outcome is in the current version of the game, work together with your
+partner to find new actions for each other to take so that you end up with
+a different outcome.</p>
+
+<h2 id="exercise-5-conditionals-and-branching">Exercise 5: conditionals and branching</h2>
+
+<p>You’re probably getting good at watching registers in the register view to
+figure out who’s winning and who’s losing. But that’s really the sort of thing
+your program should be doing for you automatically. In the final part of this
+lab, you’ll pick up on the status register stuff we were looking at in step 1 to
+find out about conditional execution.</p>
+
+<p>You’ve seen that most
+of the ARM assembly instructions can be made to execute “conditionally” using a
+one or two letter suffix.</p>
+
+<p class="talk-box">Discuss with your partner: what does this instruction do? You can look at your
+cheat sheet if you like.</p>
+
+<pre><code class="language-ARM">bne end_loop
+</code></pre>
+
+<p>Go back up to the top of your program (just under the <code>main</code> label) and add
+the following instructions. Keep the rest of your hearthstone code further down,
+as long as this stuff is at the top.</p>
+
+<pre><code class="language-ARM">movs r0, #100
+beq end_loop  @ conditional branch 1
+subs r0, #200
+beq end_loop  @ conditional branch 2
+adds r0, #100
+beq end_loop  @ conditional branch 3
+</code></pre>
+
+<p class="talk-box">Which of the <code>beq</code> instructions do you think will actually trigger the branch to
+the <code>end_loop</code>?</p>
+
+<p>Then, step through and see what happens. Can you change the condition (i.e.
+change the <code>eq</code> to something else) to execute conditional branch 2? How about
+branch 3? Have a look at the “Condition codes” section of the cheat sheet to
+familiarise yourself with all the options.</p>
+
+<p>Delete the above lines from your program and (with your partner) discuss how you
+can now use this “conditional branching” behaviour to make Hearthpebble work
+like a proper game:</p>
+
+<ol>
+  <li>at the end of player 1’s turn, check if player 2 is dead—if so, branch to a
+<code>player_1_victory</code> loop at the end (you’ll have to add this in, too)</li>
+  <li>do the same (in reverse) at the end of player 2’s turn</li>
+  <li>if both players are still alive at the end of player 2’s turn, branch back up
+to the start of player 1’s turn and start again</li>
+</ol>
+
+<p class="extension-box">Congratulations! Play with your partner, find a new partner if others are
+finishing up, try to win, try to lose, try to last for exactly 3 turns, try to
+cheat—use your imagination!</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>Congratulations! In this lab you learned how to</p>
+
+<ol>
+  <li>translate maths into assembly sequences</li>
+  <li>structure your code with labels and branches</li>
+  <li>use the status register to only execute branches in certain circumstances</li>
+</ol>
+
+<p>Next week, you’ll learn how to further structure your programs using macros.</p>
+
+<div id="new-template-info-box" class="extension-box">
+
+  <p>Using registers to hold all the game state doesn’t really scale past two
+players.</p>
+
+  <p>If you’re up for a challenge, try refactoring your Hearthpebble program to
+include a <a target="_blank" href="https://sourceware.org/binutils/docs/as/Data.html#Data"><code>.data</code>
+section</a> to store some
+data in your discoboard’s memory (perhaps with more <code>.word</code>s). Then you can load
+and store the game data (e.g. HP and mana) using the <code>ldr</code> and <code>str</code>
+instructions.</p>
+
+  <p>You’ll also need a slightly different startup file (<code>src/startup_stm32l476xx.S</code>) for
+this with a bit of extra code to initialise any static data you’re putting in
+memory. <a href="memory-startup/startup_stm32l476xx.S">Click here to download the file which includes the extra code</a>. Just a heads up: this means on startup you’ll
+need to step through a bunch more code (or, better yet, set a breakpoint on
+<code>main</code> and continute until you hit it). It’s not too complicated, but it’s worth
+being aware of the fact that it’ll be a bit different from your startup
+experiences with the week 1, 2 and 3 lab templates.</p>
+
+  <p><strong>Remember that this is extension content at this stage—don’t worry if you
+ don’t get to it in this lab.</strong></p>
+
+</div>
+
+      </div>
+
+<footer>
+
+  <p>This material was written and prepared by Dr. Ben Swift for <a href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
+
+  </footer>
+
+  </body>
+
+  </html>
