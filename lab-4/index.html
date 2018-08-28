@@ -1,0 +1,870 @@
+<html>
+
+<head>
+
+  <link href="../assets/css/www.min.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="../assets/css/main.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/code-cadets-custom.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/code-cadets-custom-dark.css" rel="stylesheet" type="text/css" />
+
+
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="../assets/js/highlight/styles/atom-one-dark.css">
+  <script type="text/javascript" src="../assets/js/highlight/highlight.pack-af76728dfe3d98887947abb9090adcb18dd6d1ad0f092d60360179561eee1e19.js"></script>
+
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <title>Lab 4: Blinky</title>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1><a href="../index.html">Code Cadets Extension 2018</a></h1>
+
+  </header>
+
+    <div id="body-wrap" role="main">
+      <div id="body">
+
+        <div id="content">
+  
+  <div class="marginleft ">
+  
+  
+    
+    
+      <div> 
+        <h1 class="post-title">Lab 4: Blinky</h1>
+    </div>
+  
+  </div>
+  
+      <div class="doublewide nomargintop" style="float:none; display:block">
+       
+<h2 id="outline">Outline</h2>
+
+<p>Before you attend this week’s lab, make sure:</p>
+
+<ol>
+  <li>
+    <p>you can read and write basic assembly code: programs with registers,
+instructions, labels and branching</p>
+  </li>
+  <li>
+    <p>you have read the lab text below</p>
+  </li>
+</ol>
+
+<p>In this week’s lab you will:</p>
+
+<ol>
+  <li>
+    <p>learn how to load and store with <code>ldr</code> and <code>str</code></p>
+  </li>
+  <li>
+    <p>blink the LEDs by reading &amp; writing special hardware registers</p>
+  </li>
+  <li>
+    <p>use <strong>functions</strong> to structure your code and remove duplication</p>
+  </li>
+</ol>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>In this week’s lab you’ll read and write some of the special hardware registers
+on your discoboard to see
+<a target="_blank" href="https://en.wikipedia.org/wiki/Light-emitting_diode">LED</a> “output” from your
+program. Seeing stuff happen in the real world is a big part of the fun of
+microcontrollers, so this is going to be fun.</p>
+
+<p>You’ll also start to see more clearly the connections between what we’ve been
+covering in this course and the higher-level programming languages you’re used
+to, with their <code>if</code> statements, <code>for</code> loops, and other niceties. This process of
+“demystifying” programming is a big part of what this course is about, so take
+the time to reflect on what you’re doing and how it fits in with what you know
+and do in other programming situations.</p>
+
+<h2 id="exercise-0-warm-up">Exercise 0: warm-up</h2>
+
+<p>Plug in your discoboard, fork &amp; clone the <a target="_blank" href="https://github.com/CanberraGrammar/cc-ext-2018-discoboard-lab-4">lab 4
+template</a> to your machine, and open the <code>src/main.S</code>
+file as usual. As discussed in the extension box at the end of the <a target="_blank" href="../lab-3/index.html#new-template-info-box">previous
+lab</a> this template contains a bit of extra startup code (in
+<code>src/startup_stm32l476xx.S</code>) for initialising any data which you’ve put in the
+<code>.data</code> section.</p>
+
+<p class="info-box">The stuff in Exercise 0 is all stuff we’ve covered already (in some cases as far
+back as lab 2) but it’s sometimes good to have a warm-up/refresher. Feel free
+to jump straight to <a href="#load-twiddle-store">Exercise 1</a> if you’re feeling
+adventurous, but there’s no shame in taking your time and working through the
+warm-up stuff—practice makes perfect!</p>
+
+<h3 id="bit-shifting--logic-ops">Bit-shifting &amp; logic ops</h3>
+
+<p>You will need to use some logic operations in this lab, in particular, setting
+(set <code>1</code>) and clearing (set <code>0</code>) bits. This warm up exercise gives you a chance
+to practice bit shifting and using logic operations to set and clear bits.</p>
+
+<p>Edit your <code>main.S</code> file so that it looks like this:</p>
+
+<pre><code class="language-ARM">main:
+  ldr r0, =0xcafe0000
+  ldr r1, =0xffff
+
+  @ your code goes here
+
+@ when it's all done, spin in an infinite loop
+loop:
+  nop
+  b loop
+</code></pre>
+
+<script>
+ "use strict";
+
+ // The original logarithmic left-pad that rose to fame
+ function padZeroes(input, length) {
+
+   if (input.length > length){
+     return input;
+   }
+
+   let padChar = "0";
+   return padChar.repeat(length - input.length) + input;
+ }
+
+ function formatWithGrouping(string) {
+   // currently only works if string length mod 4 == 0
+   let splitter = (coll, x, i) => {
+     return (i % 4 == string.length % 4 ? " " : "") + x + coll;
+   }
+   return string.split("").reduceRight(splitter).trim();
+ }
+
+ function twosComplement(value, bits) {
+   if (value >= 0) {
+     return value;
+   } else {
+     return Math.pow(2, bits) + value;
+   }
+ }
+
+ function fieldElement(id) {
+   return document.getElementById(id + "_val");
+ }
+
+ function recalc(kind) {
+   var new_value = fieldElement(kind).value.replace(/ /g, "");
+   if (kind === "hex") {
+     new_value = parseInt(new_value, 16);
+   } else if (kind === "bin") {
+     // need to strip the 0b prefix because js is dumb
+     new_value = parseInt(new_value.substring(2), 2);
+   } else if (kind === "dec") {
+     new_value = parseInt(new_value);
+   } else if (kind === "str") {
+   }
+
+   if (isNaN(new_value)) {
+     new_value = 0;
+   }
+
+   if (kind != "hex") {
+     fieldElement("hex").value = "0x " + formatWithGrouping(padZeroes(twosComplement(new_value, 32).toString(16), 8));
+   }
+   if (kind != "bin") {
+     fieldElement("bin").value = "0b " + formatWithGrouping(padZeroes(twosComplement(new_value, 32).toString(2), 32));
+   }
+   if (kind != "dec") {
+     fieldElement("dec").value = new_value;
+   }
+ }
+</script>
+
+<style>
+ .conversion-widget {
+   width: 100%;
+ }
+
+ .conversion-widget .basetype {
+   width: 4em;
+   font-weight: 900;
+ }
+
+ .conversion-widget td {
+   padding: auto 0;
+ }
+
+ .conversion-widget input {
+   width: 100%;
+   text-align: right;
+   box-sizing: border-box;
+   font-size: 100%;
+   font-family: 'Source Code Pro', monospace;
+ }
+</style>
+
+<table class="conversion-widget">
+  <tbody>
+    <tr>
+      <td class="basetype">Decimal</td>
+      <td><input oninput="recalc('dec')" id="dec_val" value="0" /></td>
+    </tr>
+    <tr>
+      <td class="basetype">Hex</td>
+      <td><input oninput="recalc('hex')" id="hex_val" value="0x 0000 0000" /></td>
+    </tr>
+    <tr>
+      <td class="basetype">Binary</td>
+      <td><input oninput="recalc('bin')" id="bin_val" value="0b 0000 0000 0000 0000 0000 0000 0000 0000" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="think-box">
+
+  <p>Using <em>only</em> the instructions in the <strong>Logic</strong> and <strong>Shift/Rotate</strong> subsections
+of the cheat sheet (but as many registers as you need) write a program which
+puts <em>all</em> of the following values into the listed registers. Use the cheat
+sheet and the converter widget to help you out—draw “bit pattern” pictures on
+a piece of paper if it helps.</p>
+
+  <ol>
+    <li><code>0xcafeffff</code> into <code>r3</code></li>
+    <li><code>0xcafe</code> into <code>r4</code></li>
+    <li><code>0xcaff0000</code> into <code>r5</code></li>
+    <li><code>0xc0fe0000</code> into <code>r6</code></li>
+  </ol>
+
+</div>
+
+<p>These shouldn’t require heaps of code—just a couple of instructions for each.
+Remember the <a target="_blank" href="../lab-2/index.html">stuff you’ve</a> <a target="_blank" href="../lab-3/index.html">done in</a> previous labs.</p>
+
+<p class="think-box">Did you need <em>both</em> of the “starting” values (e.g. <code>0xcafe0000</code> and <code>0xffff</code>) or
+could you have got the job done with only some of them? Which ones are
+essential?</p>
+
+<h3 id="labels-and-loading-arbitrary-numbers-into-registers">Labels and loading arbitrary numbers into registers</h3>
+
+<p>Labels are the symbols in your source code followed by a colon
+(<code>:</code>), e.g. <code>main:</code>. You’ve probably already got an intuitive feel for how they
+work: you put them in your code wherever you like, and when you want to branch
+to that part of the program you put the label in as the “destination” part of
+the branch instruction. Here’s an example:</p>
+
+<pre><code class="language-ARM">loop:
+  @ do stuff
+
+  b loop @ branch back to the "loop" label
+</code></pre>
+
+<p>In <a target="_blank" href="../lab-3/index.html">lab 3</a> you even used conditional branches to only branch under certain conditions
+(i.e. if certain flags were set), and you can also turn “mathematical” conditional expressions 
+(e.g. <code>x &gt;= -45</code>) into sequences of assembly instructions.</p>
+
+<p>But what are labels, really? Add this code to your program (under the <code>main</code>
+label):</p>
+
+<pre><code class="language-ARM">ldr r0, =main
+</code></pre>
+
+<p>After you step through this line, what’s in <code>r0</code>? You might be wondering what
+the <code>=</code> sign is doing in your program. Remember from lab 2 that
+instructions are stored in memory with various encodings (some are 16-bit, some
+are 32-bit) and that when you use an <em>immediate value</em> constant (e.g. <code>42</code>) in
+an instruction which supports it then the twos-compliment bit pattern for <code>42</code>
+(which is <code>0b101010</code>) is stored <em>inside</em> that instruction.</p>
+
+<p>This means that if you need to include a constant which is 32 bits long (e.g.
+<code>0xFFFFFFFF</code>) then you can’t fit it in the instruction. You may have run into
+this problem already—the error message will be something like</p>
+
+<pre><code class="language-text">Error: invalid constant (0xFFFFFFFF) after fixup
+</code></pre>
+
+<p>and what it means is that the constant value you’re using is too big (too many
+bits) for the instruction you’re trying to fit it inside.</p>
+
+<p class="extension-box">If you’re interested in exactly the ARM instruction set deals with this problem,
+and which constants <em>can</em> be stored inside a 32-bit instruction, then
+<a target="_blank" href="https://alisdair.mcdiarmid.org/arm-immediate-value-encoding/">here’s</a> an
+interesting blog post.</p>
+
+<p>Because this is a bit of a pain, the assembler provides a special syntax for
+storing larger values in registers. It’s based around the <code>ldr</code> (load register)
+instruction, and if you prefix the constant with an <code>=</code> sign then the assembler
+will generate the code<sup id="fnref:ldrpseudo"><a href="#fn:ldrpseudo" class="footnote">1</a></sup> to load the full value into the register.</p>
+
+<p>For example:</p>
+
+<pre><code class="language-ARM">mov r0, 0xFFF @ this won't work
+ldr r0, =0xFFF @ this will work
+</code></pre>
+
+<p>So how does this relate to the <code>ldr r0, =main</code> instruction above? Well, the
+answer is that the labels in your program are just values—they’re the
+addresses (in your board’s memory space) of the instruction which occurs after
+them in the program. After the linker figures out exactly which address each
+label points to, it “replaces” them in the program, so that</p>
+
+<pre><code class="language-ARM">ldr r0, =main
+</code></pre>
+
+<p>becomes <em>something like</em></p>
+
+<pre><code class="language-ARM">ldr r0, =0x80001c8
+</code></pre>
+
+<p>or whatever address the <code>main</code> label ends up pointing to (which will change
+every time your program changes).</p>
+
+<p>And since <code>0x80001c4</code> (or whatever it is) is just a bit pattern in a register,
+you can do the usual arithmetic/logic stuff you can do with any values in
+registers:</p>
+
+<p class="push-box">Write a small program which calculates the size (in memory) of the <code>movs r3, 1</code>
+instruction and stores the result in <code>r0</code>.</p>
+
+<h3 id="sections">Sections</h3>
+
+<p>Sections your program are <em>directives</em> (so they
+start with a <code>.</code>) to the assembler that the different parts of our program
+should go in different parts of the discoboard’s memory space. Some parts of
+this address space are for instructions which the discoboard will execute, but
+other parts contain <em>data</em> that your program can use.</p>
+
+<p>Your program can have as many sections as you like (with whatever names you
+like) but there are a couple of sections which the IDE &amp; toolchain will do
+useful things with by default:</p>
+
+<ul>
+  <li>
+    <p>if you use a <code>.text</code> section in your program, then anything after that (until
+the next section) will appear as program code for your discoboard to execute</p>
+  </li>
+  <li>
+    <p>if you use a <code>.data</code> section, then anything after that (until the next
+section) will be put in RAM as memory that your program can use to read/write
+data your program needs to do useful things</p>
+  </li>
+</ul>
+
+<p>When you create a new <code>main.s</code> file, any instructions you put are put in the
+<code>.text</code> section until the the assembler sees a new section directive.</p>
+
+<p>Here’s an example:</p>
+
+<pre><code class="language-ARM">main:
+  ldr r0, =main
+  ldr r1, =storage
+
+.data
+storage:
+  .word 2, 3, 0, 0
+  .asciz "Computer Organisation &amp; Program Execution"
+</code></pre>
+
+<p class="think-box">Looking at the discoboard’s address space map and running the program above,
+where do you think the <code>main</code> and <code>storage</code> parts of your program are ending up?
+Can you find the string “Computer Organisation &amp; Program Execution” in memory?
+Try and find it in the <a target="_blank" href="lab-2/index.html#reverse-engineering">memory view</a>.</p>
+
+<p><img src="address-space-fb9b7c24cc1a29feca958d54f4445bb13c9ad1f381f45e350593ffe31c27e073.jpg" /></p>
+
+<p>You can interleave the sections in your program if it makes sense:</p>
+
+<pre><code class="language-ARM">.text
+program:
+  @ ...
+
+.data
+storage:
+  @ ...
+
+.text
+more_program:
+  @ ...
+
+.data
+more_storage:
+  @ ...
+</code></pre>
+
+<p>When you hit build (or debug, which triggers a build) the toolchain will figure
+out how to put all the various bits in the right places, and you can use the
+labels as values in your program to make sure you’re reading and writing to the
+right locations.</p>
+
+<p class="extension-box">If you’re interested in seeing how it’s done, you can look at your project’s
+linker script, located at</p>
+
+<pre><code class="language-text">lib/bare_stm32l476/ldscripts/STM32L476VG_FLASH.ld
+</code></pre>
+
+<h2 id="load-twiddle-store">Exercise 1: the load-twiddle-store pattern</h2>
+
+<p>The <strong>load-twiddle-store</strong> pattern is a fundamental pattern in making your
+discoboard do useful work. The basic idea is this:</p>
+
+<ol>
+  <li>load some data from memory into a register</li>
+  <li>operate on (“twiddle”) the value in the register (e.g. with an <code>add</code> or <code>and</code>
+instruction)</li>
+  <li>store this new value from the register back into memory</li>
+</ol>
+
+<p><img src="load-twiddle-store-14f25bbb6f342d5e0011cc0f9cac3da36d2f93f5e01f46f69c37fc6d5b7f5c16.jpg" /></p>
+
+<pre><code class="language-ARM">main:
+  ldr r1, =storage
+  @ your code starts here
+
+.data
+storage:
+  .word 2, 3, 0, 0 @ don't change this line
+</code></pre>
+
+<p class="think-box">Starting with the code above, use the <strong>load-twiddle-store</strong> pattern to change
+the first four data words to <code>2</code> <code>3</code> <code>0</code> <code>1</code> instead of <code>2</code> <code>3</code> <code>0</code> <code>0</code>. Hint:
+first load the <code>storage</code> label using the <code>=</code> instruction, then remember that you
+can load and store with an offset from this base
+address (check the cheat sheet). You’ll probably also want to use the memory
+browser view (like you did <a target="_blank" href="../lab-2/index.html#reverse-engineering">in week 2</a>) to watch the values
+change in memory.</p>
+
+<h2 id="exercise-2">Exercise 2: hello, LED!</h2>
+
+<p>So what does all that stuff have to do with blinking the LEDs? Well, the answer
+is that there’s a section of the discoboard’s address space (<code>0x40000000</code> to
+<code>0x5FFFFFFF</code>) which is mapped to peripherals (as shown in the picture above). To
+interact with the LEDs, LCD, microphone etc. on the board you need to talk to
+the hardware by reading and writing to special memory locations in this memory
+range. To figure out exactly which addresses are mapped to which peripherals,
+you need to look at the discoboard <a target="_blank" href="../assets/manuals/stm32-L476G-discovery-reference-manual.pdf">reference
+manual</a>.</p>
+
+<p>One type of peripheral is a <a target="_blank" href="https://en.wikipedia.org/wiki/General-purpose_input/output">General Purpose
+Input/Output</a> pin.
+You can see them on your discoboard as little gold-coloured spikes sticking up
+out of the top and bottom of the board. Your discoboard has lots of them, and
+you can wire them up to other devices to make more sophisticated devices.</p>
+
+<p>This exercise is pretty long, so here are the steps you’ll go through to turn on
+the LED:</p>
+
+<ol>
+  <li>enable the clock for correct LED GPIO pin</li>
+  <li>set the pin to output mode</li>
+  <li>set a bit in the pin’s data register to turn the LED on</li>
+</ol>
+
+<p>Don’t worry if you don’t understand some of those terms—the rest of this
+exercise will explain all the details.</p>
+
+<p>Some of the ports on the discoboard are already connected to certain bits of
+hardware on the board. In the <a target="_blank" href="../assets/manuals/stm32-L476G-discovery-user-manual.pdf">discoboard <strong>user</strong>
+manual</a>
+Section 7.5 <em>User interface: LCD, joystick, LEDs</em> it says:</p>
+
+<blockquote>
+  <ul>
+    <li>LD4 user: the red LED is a user LED connected to the I/O PB2 of the STM32L476VGT6</li>
+    <li>LD5 user: the green LED is a user LED connected to the I/O PE8 of the STM32L476VGT6</li>
+  </ul>
+</blockquote>
+
+<p>The first bullet point says that the red LED is connected to GPIO pin <strong>PB2</strong>.
+This means that it’s connected to <strong>pin 2</strong> of <strong>port B</strong>. Just a note that the
+<em>user</em> manual (short) is different from the <em>reference</em> manual (long &amp;
+detailed).</p>
+
+<p class="think-box">What port+pin do you think the green LED is connected to?</p>
+
+<p>The GPIO pins are grouped into 8 ports (port A to port E) and each port has 16
+pins (pin). It’s worth pointing out that the pin numbering starts at 0, so the
+first pin in port A is PA0.</p>
+
+<p><img src="ports-and-pins-2bf7af0d43ed2d531f32e3036a97eee5055a2aa2cdf11d459aeba12f0448fbd7.jpg" /></p>
+
+<p>From the
+<a href="../../assets/manuals/stm32-L476G-discovery-reference-manual.pdf">reference manual</a>:</p>
+
+<blockquote>
+  <p>Each general-purpose I/O port has four 32-bit configuration registers
+(GPIOx_MODER, GPIOx_OTYPER, GPIOx_OSPEEDR and GPIOx_PUPDR), two 32-bit data
+registers (GPIOx_IDR and GPIOx_ODR) and a 32-bit set/reset register
+(GPIOx_BSRR).</p>
+</blockquote>
+
+<p>Don’t worry if this seems overwhelming, the main point is that each of these
+ports has a few dedicated configuration registers—some are used to turn it on,
+some are used to set it up, and some are used to receive data (read the voltage
+on the pin as 0 or 1) or send data out (set the voltage to high or low). When it
+says <code>GPIOx</code>, that means that there exists a version for all the ports, so the
+port A version would be called <code>GPIOA</code>, etc.</p>
+
+<p>These are not like the CPU registers you’ve been using so far (e.g. <code>r0</code> or
+<code>r5</code>). Instead, they’re mapped to certain parts of the address space (so they’re
+sometimes called memory-mapped registers). Read/write access to this register
+happens through load/store instructions to a specific memory address (as with
+pretty much everything in a load/store architecture).</p>
+
+<p>The register for turning on the clock (step 1) is in the <em>Reset and Clock
+Control (RCC)</em> section of the address space, which on your discoboard starts at
+memory address <code>0x40021000</code>. The specific register which controls the clock for
+GPIO ports is the <code>RCC_AHB2ENR</code> 32-bit register, which lives at an offset of
+<code>0x4C</code> from the RCC base address and looks like this:</p>
+
+<p><img src="AHB2ENR-ea5eaf48a71180c8ec2a8d915206fb99be92b874830ed247325f9c5610afdd99.png" /></p>
+
+<p>As you can see, the clock for GPIO port B (where your red LED is) is controlled
+through bit 1 (i.e. the <em>second</em> bit from the right, because the rightmost bit
+is bit 0). You can have a look at Section 6.4.17 of the reference manual for all
+the gory details.</p>
+
+<p>Note that in debug view you can conveniently see this information in the 
+<strong>Cortex Peripherals</strong> pane:
+<img src="peripheral-view-a992455345e8e966926c9d3ea3b2fa5fa4c9dd37c9aca36ec95cf11556ff6b27.png" /></p>
+
+<p>This is your chance to see the <strong>load-twiddle-store</strong> pattern from Exercise 1 in
+action. To turn on GPIO port B, you must:</p>
+
+<ol>
+  <li>
+    <p><strong>load</strong>: load the RCC base address into a register, then do an “offset”
+<code>ldr</code> with the <code>RCC_AHB2ENR</code> offset to read the current state of the
+<code>RCC_AHB2ENR</code> register into a CPU register</p>
+  </li>
+  <li>
+    <p><strong>twiddle</strong>: use bitwise operations to set the second-from-the-right
+<code>GPIOBEN</code> bit to 1 while leaving the other bits unchanged</p>
+  </li>
+  <li>
+    <p><strong>store</strong>: write the new <code>RCC_AHB2ENR</code> value back to the memory address you
+read it from earlier</p>
+  </li>
+</ol>
+
+<p class="info-box">When we talk about <strong>setting</strong> a bit, that means that it should be equal to <code>1</code>,
+and <strong>clearing</strong> a bit means it should be equal to <code>0</code>.</p>
+
+<p>So what does the code to perform these load-twiddle-store steps look like?</p>
+
+<pre><code class="language-ARM">@ load r1 with the base address of RCC
+ldr r1, =0x40021000
+
+@ load r2 with the value of RCC_AHB2ENR
+@ (note the 0x4C offset from the RCC base address)
+ldr r2, [r1, 0x4C]
+
+@ set bit 1 of this register by doing a logical or with 2
+@ think: why does this work?
+orr r2, 2
+
+@ store the modified result back in RCC_AHB2ENR
+str r2, [r1, 0x4C]
+</code></pre>
+
+<p class="talk-box">Discuss with your lab neighbour: why is the <strong>load</strong> part of this process
+necessary? Why can’t you just store a <code>2</code> into the <code>RCC_AHB2ENR</code> register and
+be done with it?</p>
+
+<p>You can paste the above code straight into your program. There are a couple more
+steps before you can actually turn the LED on, but they’re basically the same
+load-twiddle-store pattern, except with different addresses and “twiddles”.</p>
+
+<p>Now it’s your turn: copy-paste a second copy of the code above as a starting
+point, but you’ll need different load/store addresses and different twiddles. To
+set pin 2 of GPIO port B to output mode, you need to set the <code>MODE2</code> bits (4 and
+5) of the GPIO mode register <code>GPIOB_MODER</code>, which lives at an offset of <code>0x0</code>
+from the GPIO base address of <code>0x48000400</code> (see Section 7.4.1 of the manual for
+more info). Here’s what the <code>GPIOB_MODER</code> looks like:</p>
+
+<p><img src="GPIOx_MODER-cac1623ce5390b440fe346400ae539a00aa4b63fd61546a6130d46f29219551c.png" /></p>
+
+<p>To configure pin 2 for output mode to power the LED, you need to ensure the mode
+bits for pin 2 (<code>MODE2</code> in the diagram) are <code>01</code> for output mode (i.e. clear bit
+5, set bit 4).</p>
+
+<p class="extension-box">This output mode configuration for the mode register bits is sufficient for
+turning the LEDs on and off, but there are many more ways to configure the GPIO
+pins. If you’re interested, have a look in Section 7.4 of the manual.</p>
+
+<p>Your PB2 pin is now configured and ready to roll. The only thing left to do is
+to actually send an “on” signal to it by setting a <code>1</code> into bit 2 (for pin 2) of
+the port B Output Data Register <code>GPIOB_ODR</code>, which lives at offset <code>0x14</code> from
+the GPIOB base address and looks like this:</p>
+
+<p><img src="GPIOx_ODR-5c81f989dc6865d66ab82e543d2e0b39141d6b32b935e288970b223695542732.png" /></p>
+
+<p class="think-box">Following the steps above, write a program which turns on the red LED on your
+discoboard, and push it up to your fork on GitLab.</p>
+
+<p class="talk-box">There are a few fiddly things which can go wrong here. If your LED isn’t coming
+on, talk with your neighbour about your program. Have you accidentally set the
+wrong bit (remember that the ports and bits are 0-indexed, so the rightmost bit
+is bit 0, not bit 1). Are you reading the existing register value correctly? Are
+you turning the bit on correctly? Are you writing it back to the right memory
+address? Step through the program with your partner to see what might be going
+wrong.</p>
+
+<p class="think-box" id="red-green-push">Once you can turn the red LED on, add code to turn the green one (PE8) as well.</p>
+
+<h2 id="exercise-3-first-taste-of-functions">Exercise 3: first taste of functions</h2>
+
+<p>You should now feel a warm glow of satisfaction—let there be light! But you’ll
+also notice that a few of the steps you had to go through were pretty
+repetitive. For every step you just did, you were really doing one of two things</p>
+
+<ul>
+  <li><strong>setting</strong> a specific bit at an offset from a base address, <em>or</em></li>
+  <li><strong>clearing</strong> a specifc bit at an offset from a base address</li>
+</ul>
+
+<p>Wouldn’t it be good if we could “factor out” the common parts of those two
+tasks, so that the code is simpler and clearer? We can do that with
+<strong>functions</strong>.</p>
+
+<h3 id="functions">Functions</h3>
+
+<p>Functions are (usually resuable) blocks of code that have been designed to
+perform a specific task. Using functions allows us to break a big task (e.g.
+turning on red LED) into smaller ones (e.g. enable the peripheral clock,
+configure the GPIO mode, write the output data to the correct GPIO address),
+which in turn can be broken down into even smaller ones (e.g. setting and
+clearing a bit). How fine-grained you should break things down is a design
+choice that you get to make when you design your program.</p>
+
+<p>In this exercise you’ll write some functions to help out with turning on the
+LEDs. The general pattern for functions look like this:</p>
+
+<pre><code class="language-ARM">main:
+  @ put arguments in registers
+  @ mov r0, ...
+  bl foo  @ call function foo
+  @ continue here after function returns
+  @ ...
+
+.type foo, %function  @ optional, telling compiler foo is a function
+@ args:
+@   r0: ...
+@ result: ...
+foo:
+  @ does something
+  bx lr   @ return to "caller"
+.size foo, .-foo      @ optional, telling compiler the size of foo
+</code></pre>
+
+<p>You will notice that this looks very much like the label stuff we did
+earlier—and you’d be right. Since functions are just blocks of instructions,
+labels are used to mark the start of functions.</p>
+
+<p>The only difference between a function and the “branch to label” code you’ve
+written already in this course (with <code>b</code> or perhaps a conditional
+branch) is that with a function we want to return <em>back</em> to the
+<strong>caller</strong> (e.g. the <code>main</code> function) code; we branch with <code>bl</code> but we want to
+“come back” when we’re done with the function instructions.</p>
+
+<p>That’s why <code>bl foo</code> and <code>bx lr</code> are used in the code template above instead of
+just <code>b foo</code>.</p>
+
+<p>The <code>bl foo</code> instruction:</p>
+<ol>
+  <li>records the address of the next instruction (i.e. the next value of <code>pc</code>) in
+the <strong>link register</strong>, and</li>
+  <li>branches to the label (<code>foo</code>)</li>
+</ol>
+
+<p>The <code>bx lr</code> instruction</p>
+<ul>
+  <li>branches to the memory address stored in the <code>lr</code> register</li>
+</ul>
+
+<p>So, together these two instructions enable branching <em>to</em> a function (<code>bl foo</code>)
+and branching <em>back</em> (<code>bx lr</code>) afterwards.</p>
+
+<p class="info-box">The <code>.type</code> and <code>.size</code> directive are optional—together they tell the compiler
+that the label is a function, and what the size of the function is (<code>.-foo</code>
+means current position minus the position of the label <code>foo</code>). They are
+essential for the disassembly view to work correctly for the function.</p>
+
+<pre><code class="language-ARM">set_bit_0x48000400_0x14_2:
+  @ code to set bit 2 of word at offset 0x14 of 0x48000400 
+  bx lr
+
+main:
+  @ ...
+  bl set_bit_0x48000400_0x14_2
+  b main
+</code></pre>
+
+<p class="think-box">Update your <a href="#red-green-push">red+green</a> program by writing a few functions
+using the name pattern <code>set_bit_&lt;base&gt;_&lt;offset&gt;_&lt;index&gt;</code> and
+<code>clear_bit_&lt;base&gt;_&lt;offset&gt;_&lt;index&gt;</code> following the example above, so that your
+<code>main</code> function is just a series of <code>bl</code> instructions (and “spins” in an
+infinite loop at the end).</p>
+
+<h3 id="argumentsparameters">Arguments/parameters</h3>
+
+<p>You’ve now modularised your code (broken it up into smaller, re-usable parts),
+but it’s still pretty repetitive. There’s a lot of repeated code between the
+<code>set_bit_xxxx</code> functions.</p>
+
+<p>The only difference between these repeated versions is the difference in inputs.
+Therefore we can pass <strong>arguments</strong> to functions to parameterise those
+functions, so that we just have one <code>set_bit</code> function that we call with
+different “inputs”.</p>
+
+<p>One way of getting these input values “into” the functions is to leave the
+values in registers before making the <code>bl</code> branch. Consider the following
+<code>sum_x_y</code> function:</p>
+
+<pre><code class="language-ARM">main:
+  mov r0, 3   @ first argument, x
+  mov r1, 2   @ second argument, y
+  bl sum_x_y  @ call sum_x_y(3, 2)
+  @ get result back in r0
+
+.type sum_x_y, %function
+@ args:
+@   r0: x
+@   r1: y
+@ result: r0
+sum_x_y:
+  add r0, r1
+  bx lr
+.size sum_x_y, .-sum_x_y
+</code></pre>
+
+<p>The function adds the values in <code>r0</code> and <code>r1</code> and puts the result in <code>r0</code>. So
+the values in <code>r0</code> and <code>r1</code> are <strong>arguments</strong> (or <strong>parameters</strong>—same concept,
+different name). We can just leave the numbers we want to add in <code>r0</code> and <code>r1</code>,
+call the function <code>sum_x_y</code>, and expect the result to be in <code>r0</code> after it
+finishes.</p>
+
+<p>Did you notice something “underhanded” going on between the caller (<code>main</code>) and
+the callee (<code>sum_x_y</code>)? There is an implicit contract/agreement as to</p>
+<ul>
+  <li>which registers hold the input arguments, and</li>
+  <li>which registers hold the result</li>
+</ul>
+
+<p>This is called <strong>calling convention</strong>, a set of rules that all function calls are expected
+to adhere to. It is generally CPU architecture and programming language defined.
+There is more to calling convention, and it will be covered in lecture and in the next lab.</p>
+
+<p>Note that there are some comments before the function about where the arguments
+are placed. It’s a good idea to document what these registers are expected to
+hold for readability and clarity’s sake.</p>
+
+<p class="think-box">Parameterise your <code>set_bit</code> and <code>clear_bit</code> functions so that they each take
+three arguments: <em>base address</em>, <em>offset</em> and <em>bit index</em>. Modify your <code>main</code>
+function so that turning the LED on and off is as easy as calling your <code>set_bit</code>
+or <code>clear_bit</code> functions with the right arguments.</p>
+
+<p class="extension-box">You may have noticed that you can’t call another function while you are inside a
+function, otherwise you lose the “where do I jump back to” information in <code>lr</code>.
+So you can only make functions calls one level deep, and this can be frustrating
+when you’re trying to add further structure to your code. In the week 5 lectures
+we’ll learn some techniques for dealing with this problem.</p>
+
+<h2 id="exercise-4-blinky">Exercise 4: blinky</h2>
+
+<p>In this exercise you’ll add a simple loop into your program to blink one of the
+LEDs on and off. You can write a <code>delay</code> function to do this—do it now, and
+call it in-between your on and off instructions. Let the function take in an
+argument so that you can specify the number of steps to “delay” for.</p>
+
+<p>There are a bunch of ways to do this, but one way is to</p>
+
+<ol>
+  <li>subtract 1 from an input register,</li>
+  <li><strong>if</strong> the value isn’t zero <strong>then</strong> goto step 1, <strong>else</strong> return back to the caller.</li>
+</ol>
+
+<p class="think-box">Modify your program so that after the initial setup code, there is a loop which
+turns the LED on, delays a little while, turns it back off, delays a little
+again, then branches back to the top of the loop.</p>
+
+<p>Once you’ve done that, you should be able to blink the LEDs on your board to
+your heart’s content.</p>
+
+<h2 id="fizzblink">Exercise 5: FizzBlink</h2>
+
+<p>For the final exercise, you’ll make LED blinking more interesting by writing an
+ARM assembly version of the classic
+<a target="_blank" href="https://en.wikipedia.org/wiki/Fizz_buzz">FizzBuzz</a> childrens game (and a common
+<a target="_blank" href="https://blog.codinghorror.com/why-cant-programmers-program/">programming interview
+question</a>). The
+only difference is that instead of printing <code>"fizz"</code> or <code>"buzz"</code> to the screen
+(which you can’t do anyway, since we’re not running on the computer, you’re
+running on the discoboard) you’ll blink the LEDS on the board. So this new
+version is called <strong>FizzBlink</strong>, I guess.</p>
+
+<p>Modify your program to:</p>
+
+<ol>
+  <li>count up from <code>0</code> to <code>100</code> in increments of <code>1</code></li>
+  <li>if the number is divisible by <code>3</code>, blink the <strong>red</strong> light for some period of
+time (use your delay function)</li>
+  <li>if the number is divisible by <code>5</code>, blink the <strong>green</strong> light for some period of
+time</li>
+  <li>if the number is divisible by both <code>3</code> <em>and</em> <code>5</code>, blink <strong>both</strong> lights</li>
+</ol>
+
+<p>There are several ways you could do this, but one helpful idea is to note that
+the <code>else</code> clause is optional. You can remove the <code>else</code> clause so that it only
+executes the code if the condition is true.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>Congratulations! In this week’s lab you learned how to</p>
+
+<ol>
+  <li>
+    <p>load and store with <code>ldr</code> and <code>str</code></p>
+  </li>
+  <li>
+    <p>blink the LEDs by reading &amp; writing special hardware registers</p>
+  </li>
+  <li>
+    <p>use <strong>functions</strong> to structure your code and remove duplication</p>
+  </li>
+</ol>
+
+<p class="extension-box">Turning things on and of with a fixed delay is cool, but you can achieve more
+subtle effects with the LED using <a target="_blank" href="https://en.wikipedia.org/wiki/Pulse-width_modulation">pulse-width modulation
+(PWM)</a>. The basic idea is
+this: if you want the LED to glow brightly, then (in a loop) leave it on for a
+long time, and turn it off for a short time. If you want it to glow dimly, do
+the opposite. Using this technique, can you make the LED look like it’s
+<em>breathing</em>? Alternately, can you store some data in your program somewhere to
+blink a more complex pattern—can you program your discoboard to blink in
+<a target="_blank" href="https://en.wikipedia.org/wiki/Morse_code">Morse Code</a>?</p>
+<div class="footnotes">
+  <ol>
+    <li id="fn:ldrpseudo">
+
+      <p>Technically the second <code>ldr</code> line (with the equals sign</a>) compiles down
+to more than one instruction, but the overall effect is still to get the
+value <code>0xFFF</code> into the register <code>r0</code>. <a href="#fnref:ldrpseudo" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </div>
+
+<footer>
+
+  <p>This material was written and prepared by Dr. Ben Swift for <a href="https://cs.anu.edu.au/courses/comp2300/">COMP2300</a> at the Australian National University, licenced under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. Parts of the content have been changed/adapted for use by Canberra Grammar School. A very big thank you to Dr. Swift for allowing us to use his awesome material.</p>
+
+  </footer>
+
+  </body>
+
+  </html>
